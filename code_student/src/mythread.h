@@ -21,6 +21,7 @@ protected:
 
 private:
 
+    QString threadName;
 
 };
 
