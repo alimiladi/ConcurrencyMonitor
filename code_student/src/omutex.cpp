@@ -2,7 +2,7 @@
 
 OMutex::OMutex()
 {
-    mutex (QMutex::NonRecursive);
+    mutex (QMutex::NonRecursive);//already default mode
 }
 
 OMutex::~OMutex(){}
@@ -18,3 +18,7 @@ OMutex::unlock(){
 OMutex::tryLock(){
     mutex.tryLock();
 }
+
+OMutex::getUnderlyingMutex(){
+        return mutex;
+    }

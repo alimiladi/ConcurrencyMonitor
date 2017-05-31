@@ -15,12 +15,12 @@ public:
 
     void unlock();
 
-    QMutex getUnderlyingMutex(){
-        return mutex;
-    }
+    QMutex getUnderlyingMutex();
 
 private:
     QMutex mutex;
+    QMutex prevMutex;
+
 };
 
 #endif // PMUTEX_H
