@@ -15,7 +15,8 @@ SOURCES += src/main.cpp\
     src/omutex.cpp \
     src/osemaphore.cpp \
     src/owaitcondition.cpp \
-    src/ohoaremonitor.cpp
+    src/ohoaremonitor.cpp \
+    src/hoaremonitor.cpp
 
 HEADERS  +=  \
     src/waitinglogger.h \
@@ -23,4 +24,5 @@ HEADERS  +=  \
     src/omutex.h \
     src/osemaphore.h \
     src/owaitcondition.h \
-    src/ohoaremonitor.h
+    src/ohoaremonitor.h \
+    src/hoaremonitor.h

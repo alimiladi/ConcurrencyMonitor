@@ -2,6 +2,7 @@
 #define PWAITCONDITION_H
 
 #include "omutex.h"
+#include <QWaitCondition>
 
 class OWaitCondition
 {
@@ -13,6 +14,10 @@ public:
     void wakeAll();
 
     void wakeOne();
+
+private:
+    QWaitCondition cond;
+    QMutex mutex;
 
 };
 

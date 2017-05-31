@@ -2,6 +2,7 @@
 #define SYNCHROCONTROLLER_H
 
 
+
 class SynchroController
 {
     SynchroController();
@@ -11,6 +12,7 @@ public:
     void pause();
 
     void resume();
+
 };
 
 #endif // SYNCHROCONTROLLER_H

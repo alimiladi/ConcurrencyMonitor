@@ -1,6 +1,7 @@
 #ifndef PSEMAPHORE_H
 #define PSEMAPHORE_H
 
+#include <QSemaphore>
 
 class OSemaphore
 {
@@ -12,6 +13,9 @@ public:
     void release();
 
     bool tryAcquire();
+
+private:
+    QSemaphore sem;
 };
 
 #endif // PSEMAPHORE_H
