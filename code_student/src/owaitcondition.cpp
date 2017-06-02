@@ -1,21 +1,18 @@
 #include "owaitcondition.h"
 
-OWaitCondition::OWaitCondition()
-{
-    cond();
-    mutex(QMutex::NonRecursive);
+OWaitCondition::OWaitCondition() :
+    cond(),
+    mutex(QMutex::NonRecursive){}
+
+
+bool OWaitCondition::wait(OMutex *mutex){
+    cond.wait(mutex->getUnderlyingMutex());
 }
 
-OWaitCondition::~OWaitCondition(){}
-
-OWaitCondition::wait(OMutex *mutex){
-    cond.wait(&mutex->getUnderlyingMutex());
-}
-
-OWaitCondition::wakeOne(){
+void OWaitCondition::wakeOne(){
     cond.wakeOne();
 }
 
-OWaitCondition::wakeAll(){
+void OWaitCondition::wakeAll(){
     cond.wakeAll();
 }

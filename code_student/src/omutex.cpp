@@ -1,24 +1,22 @@
 #include "omutex.h"
 
-OMutex::OMutex()
+OMutex::OMutex() : mutex(QMutex::NonRecursive) , prevMutex(QMutex::NonRecursive)
 {
-    mutex (QMutex::NonRecursive);//already default mode
+
 }
 
-OMutex::~OMutex(){}
-
-OMutex::lock(){
+void OMutex::lock(){
     mutex.lock();
 }
 
-OMutex::unlock(){
+void OMutex::unlock(){
     mutex.unlock();
 }
 
-OMutex::tryLock(){
+bool OMutex::tryLock(){
     mutex.tryLock();
 }
 
-OMutex::getUnderlyingMutex(){
-        return mutex;
+QMutex *OMutex::getUnderlyingMutex(){
+        return &mutex;
     }

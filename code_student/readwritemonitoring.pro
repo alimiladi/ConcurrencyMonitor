@@ -16,7 +16,8 @@ SOURCES += src/main.cpp\
     src/osemaphore.cpp \
     src/owaitcondition.cpp \
     src/ohoaremonitor.cpp \
-    src/hoaremonitor.cpp
+    src/hoaremonitor.cpp \
+    src/mythread.cpp
 
 HEADERS  +=  \
     src/waitinglogger.h \
@@ -25,4 +26,5 @@ HEADERS  +=  \
     src/osemaphore.h \
     src/owaitcondition.h \
     src/ohoaremonitor.h \
-    src/hoaremonitor.h
+    src/hoaremonitor.h \
+    src/mythread.h

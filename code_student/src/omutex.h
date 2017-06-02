@@ -15,7 +15,7 @@ public:
 
     void unlock();
 
-    QMutex getUnderlyingMutex();
+    QMutex *getUnderlyingMutex();
 
 private:
     QMutex mutex;

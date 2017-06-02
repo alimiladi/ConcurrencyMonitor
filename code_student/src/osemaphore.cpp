@@ -1,20 +1,16 @@
 #include "osemaphore.h"
 
-OSemaphore::OSemaphore(int n)
-{
-    sem(n);
-}
+OSemaphore::OSemaphore(int n):
+    sem(n){}
 
-OSemaphore::~OSemaphore(){}
-
-OSemaphore::acquire(){
+void OSemaphore::acquire(){
     sem.acquire();
 }
 
-OSemaphore::release(){
+void OSemaphore::release(){
     sem.release();
 }
 
-OSemaphore::tryAcquire(){
+bool OSemaphore::tryAcquire(){
     sem.tryAcquire();
 }
