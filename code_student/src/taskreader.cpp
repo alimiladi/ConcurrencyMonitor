@@ -10,6 +10,8 @@ TaskReader::TaskReader(const unsigned int &id, const QString &name, AbstractRead
     this->resource = resource;
 }
 
+TaskReader::TaskReader(){}
+
 void TaskReader::run(){
 
     while(1) {

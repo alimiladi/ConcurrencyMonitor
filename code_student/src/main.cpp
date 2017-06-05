@@ -2,7 +2,14 @@
 #include <QApplication>
 #include "synchrocontroller.h"
 #include "taskwriter.h"
+#include "taskreader.h"
 #include <QDebug>
+
+//les 4 types (priorités) de ressources partagées avec semaphore
+#include "readerwriterequal_sem.h"
+#include "readerwriterprioreaders_sem.h"
+#include "readerwriterprioreading_sem.h"
+#include "readerwriterpriowriter_sem.h"
 
 #define NB_THREADS_READER 10
 #define NB_THREADS_WRITER 10
@@ -12,13 +19,30 @@ int main(int argc, char *argv[])
 
     //création du resource manager object
 
+    //création de la ressource partagée
+    //ReaderWriterEqual_Sem *resource;
+    //ReaderWriterPrioReaders_Sem *resource;
+    //ReaderWriterPrioReading_Sem *resource;
+    ReaderWriterPrioWriter_Sem *resource;
+
     //création des threads lecteurs
+    QList<TaskReader*> *readersList = new QList<TaskReader*>();
+    for(int i = 0; i < NB_THREADS_READER; i++){
+        readersList->append(new TaskReader(i, "taskReader"+i, resource));
+        readersList->at(i)->start();
+    }
 
     //création des threads rédacteurs
+    QList<TaskWriter*> *writersList = new QList<TaskWriter*>();
+    for(int i = 0; i < NB_THREADS_WRITER; i++){
+        writersList->append(new TaskWriter(i, "taskWriter"+i, resource));
+        writersList->at(i)->start();
+    }
+
 
     std::cout << "-----------LANCEMENT SCENARIO----------" << std::endl;
-    bool continuing = true;
 
+    bool continuing = true;
     while (continuing) {
         // Wait for a key press
 
@@ -31,35 +55,16 @@ int main(int argc, char *argv[])
 
 
 
+    //terminaison des threads Reader
+    for(int i = 0; i < NB_THREADS_READER; i++){
+        readersList->at(i)->exit();
+    }
 
+    //terminaison des threads Writer
+    for(int i = 0; i < NB_THREADS_WRITER; i++){
+        writersList->at(i)->exit();
+    }
 
-    //terminaison des threads
-    /*for(int i = 0; i < NB_THREADS_READER+NB_THREADS_WRITER; i++){
-
-        writerThreadsList->at(i)->exit();
-        readerThreadsList->at(i)->exit();
-    }*/
-
-
-
-    /* Attends la fin de chaque thread et libère la mémoire associée.
-    * Durant l'attente, l'application est bloquée.
-    */
-
-    /*MyThread *currentThread;
-       for (int i=0; i< NB_THREADS_READER+NB_THREADS_WRITER; i++){
-           currentThread = readerThreadsList->at(i);
-           currentThread->wait();
-           delete currentThread;
-           currentThread = writerThreadsList->at(i);
-           currentThread->wait();
-           delete currentThread;
-       }*/
-
-
-
-
-    // Kill the threads
 
     return 0;
 

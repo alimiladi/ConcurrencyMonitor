@@ -1,4 +1,4 @@
-/** @file readerwriterequal.h
+/** @file readerwriterequal_sem.h
  *  @brief Reader-writer with equal priorities
  *
  *  Implementation of a reader-writer resource manager with equal priorities.
@@ -10,27 +10,29 @@
  */
 
 
-#ifndef READERWRITEREQUAL_H
-#define READERWRITEREQUAL_H
+#ifndef READERWRITEREQUALSEM_H
+#define READERWRITEREQUALSEM_H
 
 #include <QSemaphore>
 
 #include "abstractreaderwriter.h"
 
 
-class ReaderWriterEqual : public AbstractReaderWriter {
+class ReaderWriterEqual_Sem : public AbstractReaderWriter {
 protected:
   QSemaphore mutex;
   QSemaphore fifo;
   QSemaphore writer;
   int nbReaders;
+  QString name;
 
 public:
-  ReaderWriterEqual() :
+  ReaderWriterEqual_Sem() :
     mutex(1),
     fifo(1),
     writer(1),
-    nbReaders(0) {}
+    nbReaders(0),
+    name("ReaderWriterEqual_Sem"){}
 
   void lockReading() {
     fifo.acquire();
@@ -63,4 +65,4 @@ public:
   }
 };
 
-#endif // READERWRITEREQUAL_H
+#endif // READERWRITEREQUALSEM_H

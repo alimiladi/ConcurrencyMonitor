@@ -1,4 +1,4 @@
-/** @file readerwriteprioreader.h
+/** @file readerwriteprioreader_sem.h
  *  @brief Reader-writer with priority for readers
  *
  *  Implementation of a reader-writer resource manager with priority
@@ -10,27 +10,29 @@
  *  @bug No known bug
  */
 
-#ifndef READERWRITERPRIOREADERS_H
-#define READERWRITERPRIOREADERS_H
+#ifndef READERWRITERPRIOREADERSSEM_H
+#define READERWRITERPRIOREADERSSEM_H
 
 #include <QSemaphore>
 
 #include "abstractreaderwriter.h"
 
-class ReaderWriterPrioReaders :
+class ReaderWriterPrioReaders_Sem :
   public AbstractReaderWriter {
 protected:
   QSemaphore mutexReaders;
   QSemaphore mutexWriters;
   QSemaphore writer;
   int nbReaders;
+  QString name;
 
 public:
-  ReaderWriterPrioReaders() :
+  ReaderWriterPrioReaders_Sem() :
   mutexReaders(1),
   mutexWriters(1),
   writer(1),
-  nbReaders(0){}
+  nbReaders(0),
+  name("ReaderWriterPrioReaders_Sem"){}
 
   void lockReading() {
     mutexReaders.acquire();
@@ -61,4 +63,4 @@ public:
   }
 };
 
-#endif // READERWRITERPRIOREADERS_H
+#endif // READERWRITERPRIOREADERSSEM_H

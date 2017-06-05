@@ -13,6 +13,7 @@ class TaskWriter : public QThread{
 
 public:
     TaskWriter(const unsigned int &id, const QString &name, AbstractReaderWriter *resource);
+    TaskWriter();
 
 
 protected:
