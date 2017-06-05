@@ -1,6 +1,6 @@
 #include "waitinglogger.h"
 
-WaitingLogger::WaitingLogger()
+WaitingLogger::WaitingLogger() : queues()
 {
 
 }
@@ -26,23 +26,23 @@ QStringList ReadWriteLogger::getResourceAccesses() const
     return resourceAccesses;
 }
 
-ReadWriteLogger::ReadWriteLogger()
+ReadWriteLogger::ReadWriteLogger() : queues()
 {
 
 }
 
 void ReadWriteLogger::addResourceAccess(const QString &threadName)
 {
-
+    resourceAccesses.append(threadName);
 }
 
 void ReadWriteLogger::removeResourceAccess(const QString &threadName)
 {
-
+    resourceAccesses.removeOne(threadName);
 }
 
 
 void ReadWriteLogger::updateView()
 {
-
+    std::cout << "The current threads trying to access the resource are : \n" << resourceAccesses << std::endl;
 }
