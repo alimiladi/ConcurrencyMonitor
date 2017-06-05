@@ -10,6 +10,8 @@ TaskWriter::TaskWriter(const unsigned int &id, const QString &name, AbstractRead
     this->resource = resource;
 }
 
+TaskWriter::TaskWriter(){}
+
 void TaskWriter::run(){
 
     while(1) {
