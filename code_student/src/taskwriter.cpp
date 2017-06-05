@@ -1,13 +1,20 @@
-#include "mythread.h"
+#include "taskwriter.h"
+#include "stdlib.h"
+#include "abstractreaderwriter.h"
 
 
-MyThread::MyThread(const QString &threadName){
+TaskWriter::TaskWriter(const unsigned int &id, const QString &name, AbstractReaderWriter *resource){
 
-    this->threadName = threadName;
+    this->id = id;
+    QThread::setObjectName(name);
+    this->resource = resource;
 }
 
-void MyThread::run(){
+void TaskWriter::run(){
 
-
-    std::cout << threadName.toStdString() << std::endl;
+    while(1) {
+        resource->lockReading();
+        std::cout << "Task " << id << " : écriture " << std::endl;
+        resource->unlockReading();
+    }
 }

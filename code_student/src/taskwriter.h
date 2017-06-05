@@ -1,28 +1,30 @@
-#ifndef MYTHREAD_H
-#define MYTHREAD_H
+#ifndef TASKWRITER_H
+#define TASKWRITER_H
 
 
 #include <iostream>
 #include <QThread>
 #include <QString>
+#include "abstractreaderwriter.h"
 
-class MyThread : public QThread{
+class TaskWriter : public QThread{
 
     Q_OBJECT
 
 public:
+    TaskWriter(const unsigned int &id, const QString &name, AbstractReaderWriter *resource);
 
-    MyThread(const QString &threadName);
 
 protected:
-
 
     void run() Q_DECL_OVERRIDE;
 
 private:
 
-    QString threadName;
+    unsigned int id;
+    AbstractReaderWriter *resource;
+
 
 };
 
-#endif // MYTHREAD_H
+#endif // TASKWRITER_H
