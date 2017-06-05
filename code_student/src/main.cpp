@@ -26,7 +26,7 @@ int main(int argc, char *argv[])
     ReaderWriterPrioWriter_Sem *resource;
 
     //création des threads lecteurs
-    QList<TaskReader*> *readersList = new QList<TaskReader*>();
+    /*QList<TaskReader*> *readersList = new QList<TaskReader*>();
     for(int i = 0; i < NB_THREADS_READER; i++){
         readersList->append(new TaskReader(i, "taskReader"+i, resource));
         readersList->at(i)->start();
@@ -37,33 +37,52 @@ int main(int argc, char *argv[])
     for(int i = 0; i < NB_THREADS_WRITER; i++){
         writersList->append(new TaskWriter(i, "taskWriter"+i, resource));
         writersList->at(i)->start();
-    }
+    }*/
 
 
     std::cout << "-----------LANCEMENT SCENARIO----------" << std::endl;
 
     bool continuing = true;
+    char  saisie;
+    bool ko;
     while (continuing) {
+
         // Wait for a key press
+        do {
+           std::cout << "Do you want to continue? (y or n):";
+           std::cin >> saisie;
+           ko = std::cin.fail() || (saisie != 'y' && saisie != 'n');
+           std::cout << ko << std::endl;
+           if (std::cin.fail()) {
+              std::cin.clear();
+              std::cout << "input error" << endl;
+           }
+           while(std::cin.get() != '\n'); // vide le buffer
+        } while (ko);
 
-        // If key is <enter>
-        SynchroController::getInstance()->resume();
-
-        // If key was <esc>
-        continuing = false;
+        // If key is <y>
+        if(saisie == 'y'){
+            std::cout << "encore" << std::endl;
+            SynchroController::getInstance()->resume();
+        }
+        // If key was <n>
+        else if(saisie == 'n'){
+            std::cout << "fin" << std::endl;
+            continuing = false;
+        }
     }
 
 
 
     //terminaison des threads Reader
-    for(int i = 0; i < NB_THREADS_READER; i++){
+   /* for(int i = 0; i < NB_THREADS_READER; i++){
         readersList->at(i)->exit();
     }
 
     //terminaison des threads Writer
     for(int i = 0; i < NB_THREADS_WRITER; i++){
         writersList->at(i)->exit();
-    }
+    }*/
 
 
     return 0;
