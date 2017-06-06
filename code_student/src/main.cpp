@@ -16,6 +16,9 @@
 
 int main(int argc, char *argv[])
 {
+    //pour mettre le main en attente
+    //un thread se mettant en pause va débloquer le main
+    QSemaphore *mainWaiting = new QSemaphore(0);
 
     //création du resource manager object
 
@@ -43,16 +46,19 @@ int main(int argc, char *argv[])
     std::cout << "-----------LANCEMENT SCENARIO----------" << std::endl;
 
     bool continuing = true;
-    char  saisie;
+    char saisie;
     bool ko;
     while (continuing) {
+
+        //on attend la pause d'un thread
+        mainWaiting->acquire();
 
         // Wait for a key press
         do {
            std::cout << "Do you want to continue? (y or n):";
+           std::cout.flush();
            std::cin >> saisie;
            ko = std::cin.fail() || (saisie != 'y' && saisie != 'n');
-           std::cout << ko << std::endl;
            if (std::cin.fail()) {
               std::cin.clear();
               std::cout << "input error" << endl;
