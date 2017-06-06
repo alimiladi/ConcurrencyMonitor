@@ -2,11 +2,20 @@
 #define PSEMAPHORE_H
 
 #include <QSemaphore>
+#include "waitinglogger.h"
+#include "QMutex"
 
-class OSemaphore
+/**
+ * @brief The OSemaphore class
+ * Sémaphore adapté aux besoins de l'appli, hérite de ReadWriteLogger pour pouvoir faire
+ * des logs s'il y'a des threads qui bloquent dessus.
+ *
+ */
+class OSemaphore : public ReadWriteLogger
 {
 public:
-    OSemaphore(int n = 0);
+    //! Constructeur pareil à celui de QSemaphore
+    OSemaphore(int n);
 
     void acquire();
 
@@ -14,8 +23,18 @@ public:
 
     bool tryAcquire();
 
+    void setName(QString name);
+
+    void setThreadName(QString name);
+
 private:
     QSemaphore sem;
+    QString name = "sem",
+    thread_name = "thread"; //! nom du thread bloqué sur ce sémaphore
+    unsigned int nb_access, //nombre de threads ayant essayé d'acquérir le sémaphore
+    initial_capacity; // capacité avec laquelle le sémaphore est initialisé
+    QMutex mutex; // utilisé pour protéger les accès à la variable nb_access
+
 };
 
 #endif // PSEMAPHORE_H

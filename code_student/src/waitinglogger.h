@@ -28,6 +28,13 @@ public:
     void removeWaiting(const QString& threadName,const QString& objectName);
 
 
+    /**
+     * @brief WaitingLogger::contains
+     * Pour voir si la liste existe déjà dans le logger
+     * @param objectName
+     * @return
+     */
+    bool contains(QString &objectName);
 
 protected:
     WaitingLogger();
