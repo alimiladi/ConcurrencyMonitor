@@ -16,8 +16,11 @@ TaskReader::TaskReader(){}
 void TaskReader::run(){
 
     while(1) {
+        std::cout << "locked reading for thread " << id << std::endl;
+        synchroController->pause();
         resource->lockReading();
         std::cout << "Task " << id << " : lecture " << std::endl;
+        std::cout << "unlocked reading for thread " << id << std::endl;
         synchroController->pause();
         resource->unlockReading();
     }

@@ -16,9 +16,12 @@ TaskWriter::TaskWriter(){}
 void TaskWriter::run(){
 
     while(1) {
-        resource->lockReading();
-        std::cout << "Task " << id << " : écriture " << std::endl;
+        std::cout << "locked writing for thread " << id << std::endl;
         synchroController->pause();
-        resource->unlockReading();
+        resource->lockWriting();
+        std::cout << "Task " << id << " : ecriture " << std::endl;
+        std::cout << "unlocked writing for thread " << id << std::endl;
+        synchroController->pause();
+        resource->unlockWriting();
     }
 }

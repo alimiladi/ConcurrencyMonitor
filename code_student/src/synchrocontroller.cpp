@@ -1,6 +1,9 @@
 #include "synchrocontroller.h"
+#include <iostream>
 
-SynchroController::SynchroController()
+
+SynchroController::SynchroController():
+mutex(QMutex::NonRecursive)
 {
        mainWaiting = new QSemaphore(0);
        threadWaiting = new QSemaphore(0);
@@ -15,16 +18,16 @@ SynchroController *SynchroController::getInstance()
 
 void SynchroController::pause()
 {
+    mutex.lock();
+    mutex.unlock();
     //on redonne la main au main thread pour demander à l'utilisateur la suite
     mainWaiting->release();
-
     //on met le thread en pause
     threadWaiting->acquire();
 }
 
 void SynchroController::resume()
 {
-
     //on libère le thread
     threadWaiting->release();
 }
