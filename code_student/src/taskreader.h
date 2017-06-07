@@ -6,13 +6,14 @@
 #include <QThread>
 #include <QString>
 #include "abstractreaderwriter.h"
+#include "synchrocontroller.h"
 
 class TaskReader : public QThread{
 
     Q_OBJECT
 
 public:
-    TaskReader(const unsigned int &id, const QString &name, AbstractReaderWriter *resource);
+    TaskReader(const unsigned int &id, const QString &name, AbstractReaderWriter *resource, SynchroController* synchroController);
     TaskReader();
 
 
@@ -24,6 +25,7 @@ private:
 
     unsigned int id;
     AbstractReaderWriter *resource;
+    SynchroController* synchroController;
 
 
 };

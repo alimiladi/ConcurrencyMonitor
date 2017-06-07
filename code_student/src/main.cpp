@@ -17,6 +17,8 @@
 int main(int argc, char *argv[])
 {
 
+    std::cout << "-----------LANCEMENT SCENARIO----------" << std::endl;
+
     //création du synchro controleur
     SynchroController* synchroController = SynchroController::getInstance();
 
@@ -29,19 +31,16 @@ int main(int argc, char *argv[])
     //création des threads lecteurs
     /*QList<TaskReader*> *readersList = new QList<TaskReader*>();
     for(int i = 0; i < NB_THREADS_READER; i++){
-        readersList->append(new TaskReader(i, "taskReader"+i, resource));
+        readersList->append(new TaskReader(i, "taskReader"+i, resource, synchroController));
         readersList->at(i)->start();
     }
 
     //création des threads rédacteurs
     QList<TaskWriter*> *writersList = new QList<TaskWriter*>();
     for(int i = 0; i < NB_THREADS_WRITER; i++){
-        writersList->append(new TaskWriter(i, "taskWriter"+i, resource));
+        writersList->append(new TaskWriter(i, "taskWriter"+i, resource, synchroController));
         writersList->at(i)->start();
     }*/
-
-
-    std::cout << "-----------LANCEMENT SCENARIO----------" << std::endl;
 
     bool continuing = true;
     char saisie;

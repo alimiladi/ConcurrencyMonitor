@@ -9,6 +9,9 @@ class SynchroController
     //un thread se mettant en pause va débloquer le main
     QSemaphore *mainWaiting;
 
+    //file d'attente pour les threads
+    QSemaphore *threadWaiting;
+
     SynchroController();
 
 public:
@@ -19,7 +22,9 @@ public:
 
     void resume();
 
+    //getters
     QSemaphore * getMainWaiting();
+    //QSemaphore * getThreadWaiting();
 
 };
 

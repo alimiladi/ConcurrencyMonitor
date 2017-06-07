@@ -3,6 +3,7 @@
 SynchroController::SynchroController()
 {
        mainWaiting = new QSemaphore(0);
+       threadWaiting = new QSemaphore(0);
 }
 
 
@@ -18,15 +19,20 @@ void SynchroController::pause()
     mainWaiting->release();
 
     //on met le thread en pause
-
+    threadWaiting->acquire();
 }
 
 void SynchroController::resume()
 {
 
     //on libère le thread
+    threadWaiting->release();
 }
 
 QSemaphore* SynchroController::getMainWaiting(){
     return mainWaiting;
 }
+
+/*QSemaphore* SynchroController::getThreadWaiting(){
+    return threadWaiting;
+}*/
