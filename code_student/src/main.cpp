@@ -16,11 +16,9 @@
 
 int main(int argc, char *argv[])
 {
-    //pour mettre le main en attente
-    //un thread se mettant en pause va débloquer le main
-    QSemaphore *mainWaiting = new QSemaphore(0);
 
-    //création du resource manager object
+    //création du synchro controleur
+    SynchroController* synchroController = SynchroController::getInstance();
 
     //création de la ressource partagée
     //ReaderWriterEqual_Sem *resource;
@@ -51,7 +49,7 @@ int main(int argc, char *argv[])
     while (continuing) {
 
         //on attend la pause d'un thread
-        mainWaiting->acquire();
+        synchroController->getMainWaiting()->acquire();
 
         // Wait for a key press
         do {

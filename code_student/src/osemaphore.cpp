@@ -16,11 +16,11 @@ OSemaphore::OSemaphore(int n):
  * Définit le nom du sémaphore
  * @param name
  */
-OSemaphore::setName(QString name){
+void OSemaphore::setName(QString name){
     this->name = name;
 }
 
-OSemaphore::setThreadName(QString name){
+void OSemaphore::setThreadName(QString name){
     this->thread_name = name;
 }
 

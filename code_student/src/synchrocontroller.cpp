@@ -2,7 +2,7 @@
 
 SynchroController::SynchroController()
 {
-
+       mainWaiting = new QSemaphore(0);
 }
 
 
@@ -14,10 +14,19 @@ SynchroController *SynchroController::getInstance()
 
 void SynchroController::pause()
 {
+    //on redonne la main au main thread pour demander à l'utilisateur la suite
+    mainWaiting->release();
+
+    //on met le thread en pause
 
 }
 
 void SynchroController::resume()
 {
 
+    //on libère le thread
+}
+
+QSemaphore* SynchroController::getMainWaiting(){
+    return mainWaiting;
 }

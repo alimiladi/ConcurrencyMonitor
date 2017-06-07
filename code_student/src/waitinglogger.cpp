@@ -13,8 +13,8 @@ WaitingLogger *WaitingLogger::getInstance()
 
 bool WaitingLogger::contains(QString &objectName)
 {
-    foreach (WaitingQueue waitingQueue, queues) {
-        if (waitingQueue.name == objectName) {
+    foreach (WaitingQueue* waitingQueue, queues) {
+        if (waitingQueue->getName() == objectName) {
             return true;
         }
         return false;
@@ -31,14 +31,14 @@ void WaitingLogger::updateView()
 
 }
 
-WaitingLogger::addWaiting(const QString &threadName, const QString &objectName)
+void WaitingLogger::addWaiting(const QString &threadName, const QString &objectName)
 {
 //    if (contains(objectName)) {
 //        queues.
 //    }
 }
 
-WaitingLogger::removeWaiting(const QString &threadName, const QString &objectName)
+void WaitingLogger::removeWaiting(const QString &threadName, const QString &objectName)
 {
 
 }

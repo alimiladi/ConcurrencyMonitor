@@ -8,6 +8,15 @@ class WaitingQueue
 {
     QString name;
     QStringList threadNames;
+
+public:
+    QString getName(){
+        return name;
+    }
+
+    QStringList getThreadNames(){
+        return threadNames;
+    }
 };
 
 class WaitingLogger
