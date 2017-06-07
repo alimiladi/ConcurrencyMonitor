@@ -13,7 +13,7 @@ class TaskWriter : public QThread{
     Q_OBJECT
 
 public:
-    TaskWriter(const unsigned int &id, const QString &name, AbstractReaderWriter *resource, SynchroController* synchroController);
+    TaskWriter(const unsigned int &id, const QString &name, AbstractReaderWriter *resource);
     TaskWriter();
 
 
@@ -25,7 +25,7 @@ private:
 
     unsigned int id;
     AbstractReaderWriter *resource;
-    SynchroController* synchroController;
+
 
 
 };

@@ -31,22 +31,33 @@ void OSemaphore::acquire(){
     //Incrément du nombre de threads voulants acquérir le sémaphore
     mutex.lock();
     nb_access ++;
-    if (nb_access <= initial_capacity) { // si <= n
-        mutex.unlock(); // libération du mutex car plus de modif de la variable nb_access
-        addResourceAccess(thread_name); // On rajoute le thread dans la liste des threads accédants à la ressource
+    if (nb_access > initial_capacity) {
+        // si le nombre de threads appelant acquire est > n on le rajoute dans la liste d'attente
+        ReadWriteLogger::getInstance()->addWaiting(thread_name, name);
     }
-    else{ // sinon on le rajoute dans la liste des threads en attente sur cette resource
-        mutex.unlock(); // libération du mutex
-        addWaiting(thread_name, name);
-        updateView();
-    }
+    mutex.unlock(); // libération du mutex
     sem.acquire();
 }
 
 void OSemaphore::release(){
+    mutex.lock();
+    if(nb_access > initial_capacity){
+        ReadWriteLogger::getInstance()->removeWaiting(thread_name, name);
+    }
+    nb_access --;
     sem.release();
+    mutex.unlock();
 }
 
 bool OSemaphore::tryAcquire(){
-    return sem.tryAcquire();
+    mutex.lock();
+    nb_access ++;
+    if(nb_access > initial_capacity){
+        nb_access--;
+        mutex.unlock();
+        return false;
+    }
+    sem.acquire();
+    mutex.unlock();
+    return true;
 }

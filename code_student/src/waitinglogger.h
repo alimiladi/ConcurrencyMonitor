@@ -3,20 +3,23 @@
 
 #include <QStringList>
 #include <QList>
+#include <QMutex>
 
 class WaitingQueue
 {
     QString name;
-    QStringList threadNames;
+    QStringList threadNames;    
 
 public:
-    QString getName(){
-        return name;
-    }
+    QString getName();
 
-    QStringList getThreadNames(){
-        return threadNames;
-    }
+    QStringList getThreadNames();
+
+    void setName(const QString &name);
+
+    void addThreadName(const QString &threadName);
+
+    void removeThreadName(const QString &threadName);
 };
 
 class WaitingLogger
@@ -43,7 +46,7 @@ public:
      * @param objectName
      * @return
      */
-    bool contains(QString &objectName);
+    WaitingQueue *contains(const QString &objectName);
 
 protected:
     WaitingLogger();
@@ -59,6 +62,7 @@ protected:
     virtual void updateView();
 
     QList<WaitingQueue *> queues;
+    QMutex mutex;
 
 };
 
@@ -72,6 +76,10 @@ public:
 
     void addResourceAccess(const QString &threadName);
     void removeResourceAccess(const QString &threadName);
+
+    static ReadWriteLogger *getInstance();
+
+    void print(QString string);
 
 protected:
 

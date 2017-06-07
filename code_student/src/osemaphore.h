@@ -11,7 +11,7 @@
  * des logs s'il y'a des threads qui bloquent dessus.
  *
  */
-class OSemaphore : public ReadWriteLogger
+class OSemaphore
 {
 public:
     //! Constructeur pareil à celui de QSemaphore

@@ -15,6 +15,8 @@ private:
     //file d'attente pour les threads
     QSemaphore *threadWaiting;
 
+    QSemaphore *fifo;
+
     // nombre de threads bloqués en attente
     unsigned int nbPaused = 0;
 
@@ -25,7 +27,7 @@ public:
 
     static SynchroController *getInstance();
 
-    void pause();
+    void pause(unsigned int id, bool isReader, bool isLocking);
 
     void resume();
 

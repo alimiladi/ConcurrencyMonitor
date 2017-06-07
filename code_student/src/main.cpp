@@ -4,6 +4,7 @@
 #include "taskwriter.h"
 #include "taskreader.h"
 #include <QDebug>
+#include "waitinglogger.h"
 
 //les 4 types (priorités) de ressources partagées avec semaphore
 #include "readerwriterequal_sem.h"
@@ -19,28 +20,25 @@ int main(int argc, char *argv[])
 
     std::cout << "-----------LANCEMENT SCENARIO----------" << std::endl;
 
-    //création du synchro controleur
-    SynchroController* synchroController = SynchroController::getInstance();
-
     //création de la ressource partagée
-    //ReaderWriterEqual_Sem *resource;
-    //ReaderWriterPrioReaders_Sem *resource;
-    //ReaderWriterPrioReading_Sem *resource;
+//    ReaderWriterEqual_Sem *resource;
+//    ReaderWriterPrioReaders_Sem *resource;
+//    ReaderWriterPrioReading_Sem *resource;
     ReaderWriterPrioWriter_Sem *resource = new ReaderWriterPrioWriter_Sem();
 
     //création des threads rédacteurs
     QList<TaskWriter*> *writersList = new QList<TaskWriter*>();
     for(int i = 0; i < NB_THREADS_WRITER; i++){
-        std::cout << "Creation du redacteur no : " << i << std::endl;
-        writersList->append(new TaskWriter(i, "taskWriter"+i, resource, synchroController));
+//        std::cout << "Creation du redacteur no : " << i << std::endl;
+        writersList->append(new TaskWriter(i, QString("redacteur %1").arg(i), resource));
         writersList->at(i)->start();
     }
 
     //création des threads lecteurs
     QList<TaskReader*> *readersList = new QList<TaskReader*>();
     for(int i = 0; i < NB_THREADS_READER; i++){
-        std::cout << "Creation du lecteur no : " << i << std::endl;
-        readersList->append(new TaskReader(i, "taskReader"+i, resource, synchroController));
+//        std::cout << "Creation du lecteur no : " << i << std::endl;
+        readersList->append(new TaskReader(i, QString("lecteur %1").arg(i), resource));
         readersList->at(i)->start();
     }
 
@@ -50,7 +48,7 @@ int main(int argc, char *argv[])
     while (continuing) {
 
 //        //on attend la pause d'un thread
-        synchroController->getMainWaiting()->acquire();
+        SynchroController::getInstance()->getMainWaiting()->acquire();
 
 //        synchroController->pause();
 
@@ -72,7 +70,7 @@ int main(int argc, char *argv[])
         if(saisie == 'y'){
 //            std::cout << "encore" << std::endl;
 //            SynchroController::getInstance()->resume();
-            synchroController->resume();
+            SynchroController::getInstance()->resume();
         }
         // If key was <n>
         else if(saisie == 'n'){
