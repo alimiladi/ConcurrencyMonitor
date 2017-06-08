@@ -17,15 +17,15 @@ public:
     //! Constructeur pareil à celui de QSemaphore
     OSemaphore(int n);
 
-    void acquire();
+    void acquire(unsigned int id);
 
-    void release();
+    void release(unsigned int id);
 
     bool tryAcquire();
 
     void setName(QString name);
 
-    void setThreadName(QString name);
+    //void setThreadName(QString name);
 
 private:
     QSemaphore sem;

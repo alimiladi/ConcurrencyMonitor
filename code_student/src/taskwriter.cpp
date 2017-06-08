@@ -14,12 +14,15 @@ TaskWriter::TaskWriter(){}
 
 void TaskWriter::run(){
 
+    bool firstTime = true;
+
     while(1) {
-        SynchroController::getInstance()->pause(id, false, true);
-        resource->lockWriting();
-        ReadWriteLogger::getInstance()->addResourceAccess(QThread::objectName());
-        SynchroController::getInstance()->pause(id, false, false);
-        resource->unlockWriting();
-        ReadWriteLogger::getInstance()->removeResourceAccess(QThread::objectName());
+        SynchroController::getInstance()->pause(id, firstTime);
+        firstTime = false;
+        resource->lockWriting(id);
+        ReadWriteLogger::getInstance()->addResourceAccess(id);
+        SynchroController::getInstance()->pause(id, firstTime);
+        resource->unlockWriting(id);
+        ReadWriteLogger::getInstance()->removeResourceAccess(id);
     }
 }

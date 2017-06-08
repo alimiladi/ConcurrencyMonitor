@@ -1,5 +1,23 @@
 #include "waitinglogger.h"
 #include "iostream"
+#include <QThread>
+
+void WaitingLogger::printLogs(unsigned int id){
+    std::cout << qPrintable(*(this->logs->at(id))) << std::endl;
+}
+
+void WaitingLogger::clearLogs(unsigned int id){
+    this->logs->at(id)->clear();
+}
+
+
+void WaitingLogger::setSizeLogs(unsigned int nbThreads){
+
+    for(int i = 0; i < nbThreads; i++){
+        logs->append(new QString(""));
+    }
+}
+
 
 WaitingLogger::WaitingLogger() : queues(), mutex(QMutex::NonRecursive)
 {
@@ -27,14 +45,15 @@ QList<WaitingQueue *> WaitingLogger::getQueues() const
     return queues;
 }
 
-void WaitingLogger::updateView()
+void WaitingLogger::updateView(unsigned int id)
 {
 
 }
 
-void WaitingLogger::addWaiting(const QString &threadName, const QString &objectName)
+void WaitingLogger::addWaiting(const QString &objectName, unsigned int id)
 {
     mutex.lock();
+    QString threadName = QThread::currentThread()->objectName();
     WaitingQueue *queue = contains(objectName);
     if(queue != nullptr){
         queue->addThreadName(threadName);
@@ -45,17 +64,18 @@ void WaitingLogger::addWaiting(const QString &threadName, const QString &objectN
         queue->addThreadName(threadName);
         queues.append(queue);
     }
-    updateView();
+    updateView(id);
     mutex.unlock();
 }
 
-void WaitingLogger::removeWaiting(const QString &threadName, const QString &objectName)
+void WaitingLogger::removeWaiting(const QString &objectName, unsigned int id)
 {
     mutex.lock();
+    QString threadName = QThread::currentThread()->objectName();
     WaitingQueue *queue = contains(objectName);
     if(queue != nullptr){
         queue->removeThreadName(threadName);
-        updateView();
+        updateView(id);
     }
     mutex.unlock();
 }
@@ -70,47 +90,57 @@ ReadWriteLogger::ReadWriteLogger()
 
 }
 
-void ReadWriteLogger::addResourceAccess(const QString &threadName)
+void ReadWriteLogger::addResourceAccess(unsigned int id)
 {
     mutex.lock();
+    QString threadName = QThread::currentThread()->objectName();
     resourceAccesses.append(threadName);
-    updateView();
+    //on enlève le thread de toutes les listes d'attente car il est dans la ressource
+    foreach (WaitingQueue *queue, queues) {
+        queue->removeThreadName(threadName);
+    }
+    updateView(id);
     mutex.unlock();
 }
 
-void ReadWriteLogger::removeResourceAccess(const QString &threadName)
+void ReadWriteLogger::removeResourceAccess(unsigned int id)
 {
     mutex.lock();
+    QString threadName = QThread::currentThread()->objectName();
     resourceAccesses.removeOne(threadName);
-    updateView();
+    updateView(id);
     mutex.unlock();
 }
 
 
-void ReadWriteLogger::updateView()
+void ReadWriteLogger::updateView(unsigned int id)
 {
-    //mutex.lock();
-    QString string;
+
+    //avant que le thread écrive ses logs,
+    //il doit effacer les précédents car on sait qu'ils ont déjà été affichés.
+    logs->at(id)->clear();
+
+    logs->at(id)->append("\n***************************************************\n");
     for(int i = 0; i< queues.size(); i ++){
-        string.append(queues.at(i)->getName()).append(" <- ");
+        logs->at(id)->append(queues.at(i)->getName()).append(" <- ");
         for(int j =0 ; j< queues.at(i)->getThreadNames().size() ; j ++){
-            string.append(queues.at(i)->getThreadNames().at(j));
+            logs->at(id)->append(queues.at(i)->getThreadNames().at(j));
             if(j!=queues.at(i)->getThreadNames().size()-1){
-                string.append("-");
+                logs->at(id)->append(" - ");
             }
         }
-        string.append("\n");
+        logs->at(id)->append("\n");
     }
-    string.append("In ressource : ");
+    logs->at(id)->append("In ressource : ");
     for(int k = 0;k <resourceAccesses.size(); k++){
-        string.append(resourceAccesses.at(k));
+        logs->at(id)->append(resourceAccesses.at(k));
         if(k != resourceAccesses.size()-1){
-            string.append(", ");
+            logs->at(id)->append(", ");
         }
     }
-    string.append("\n");
-    std::cout << qPrintable(string) << std::endl;
-    //mutex.unlock();
+    logs->at(id)->append("\n***************************************************\n");
+
+
 }
 
 

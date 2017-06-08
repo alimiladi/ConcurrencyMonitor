@@ -23,6 +23,7 @@ protected:
 
 private:
 
+    //identifiant unique pour les logs
     unsigned int id;
     AbstractReaderWriter *resource;
 

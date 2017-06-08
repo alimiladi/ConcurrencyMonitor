@@ -27,7 +27,7 @@ public:
 
     static SynchroController *getInstance();
 
-    void pause(unsigned int id, bool isReader, bool isLocking);
+    void pause(unsigned int id, bool firstTime);
 
     void resume();
 

@@ -12,8 +12,8 @@
 #include "readerwriterprioreading_sem.h"
 #include "readerwriterpriowriter_sem.h"
 
-#define NB_THREADS_READER 1
-#define NB_THREADS_WRITER 1
+#define NB_THREADS_READER 3
+#define NB_THREADS_WRITER 3
 
 int main(int argc, char *argv[])
 {
@@ -26,18 +26,27 @@ int main(int argc, char *argv[])
 //    ReaderWriterPrioReading_Sem *resource;
     ReaderWriterPrioWriter_Sem *resource = new ReaderWriterPrioWriter_Sem();
 
+    //on set le tableau des logs
+    WaitingLogger::getInstance()->setSizeLogs(NB_THREADS_READER+NB_THREADS_WRITER);
+
+    //on prépare le compteur pour les identifiants unique de logs
+    //entre tous les threads (lecteur et rédacteurs)
+    unsigned int logId = 0;
+
     //création des threads rédacteurs
     QList<TaskWriter*> *writersList = new QList<TaskWriter*>();
     for(int i = 0; i < NB_THREADS_WRITER; i++){
-        writersList->append(new TaskWriter(i, QString("redacteur %1").arg(i), resource));
+        writersList->append(new TaskWriter(logId, QString("redacteur%1").arg(i), resource));
         writersList->at(i)->start();
+        logId++;
     }
 
     //création des threads lecteurs
     QList<TaskReader*> *readersList = new QList<TaskReader*>();
     for(int i = 0; i < NB_THREADS_READER; i++){
-        readersList->append(new TaskReader(i, QString("lecteur %1").arg(i), resource));
+        readersList->append(new TaskReader(logId, QString("lecteur%1").arg(i), resource));
         readersList->at(i)->start();
+        logId++;
     }
 
     bool continuing = true;
@@ -64,6 +73,16 @@ int main(int argc, char *argv[])
 
         // If key is <y>
         if(saisie == 'y'){
+
+            //on efface tous les logs
+            //si on efface depuis ici, les logs seront plus détaillés mais il y aura des étapes vide
+            //c'est péférable d'utiliser le Waitinglogger et sa méthode updateView pour effacer les logs
+            //à chaque fois qu'on veut en écrire un nouveau. Même si cela procure parfois l'effet d'étape sautées
+            //pour l'utilisateur qui regarde les logs. Nous avons constaté que cela arrive très rarement.
+            /*for(int i = 0 ; i < NB_THREADS_READER+NB_THREADS_WRITER; i++){
+                WaitingLogger::getInstance()->clearLogs(i);
+            }*/
+
             SynchroController::getInstance()->resume();
         }
         // If key was <n>

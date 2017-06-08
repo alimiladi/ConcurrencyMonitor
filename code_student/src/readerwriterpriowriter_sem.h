@@ -49,42 +49,42 @@ public:
       writer.setName("writer");
   }
 
-  void lockReading() {
-    mutexReaders.acquire();
-    reader.acquire();
-    mutex.acquire();
+  void lockReading(unsigned int id) {
+    mutexReaders.acquire(id);
+    reader.acquire(id);
+    mutex.acquire(id);
     nbReaders++;
     if (nbReaders==1)
-      writer.acquire();
-    mutex.release();
-    reader.release();
-    mutexReaders.release();
+      writer.acquire(id);
+    mutex.release(id);
+    reader.release(id);
+    mutexReaders.release(id);
   }
 
-  void unlockReading() {
-    mutex.acquire();
+  void unlockReading(unsigned int id) {
+    mutex.acquire(id);
     nbReaders--;
     if (nbReaders==0)
-      writer.release();
-    mutex.release();
+      writer.release(id);
+    mutex.release(id);
   }
 
-  void lockWriting() {
-    mutexWriters.acquire();
+  void lockWriting(unsigned int id) {
+    mutexWriters.acquire(id);
     nbWriters++;
     if (nbWriters==1)
-      reader.acquire();
-    mutexWriters.release();
-    writer.acquire();
+      reader.acquire(id);
+    mutexWriters.release(id);
+    writer.acquire(id);
   }
 
-  void unlockWriting() {
-    writer.release();
-    mutexWriters.acquire();
+  void unlockWriting(unsigned int id) {
+    writer.release(id);
+    mutexWriters.acquire(id);
     nbWriters--;
     if (nbWriters==0)
-      reader.release();
-    mutexWriters.release();
+      reader.release(id);
+    mutexWriters.release(id);
   }
 };
 
