@@ -20,29 +20,26 @@ void OSemaphore::setName(QString name){
     this->name = name;
 }
 
-/*void OSemaphore::setThreadName(QString thread_name){
-    this->thread_name = thread_name;
-}*/
 
 /**
  * @brief OSemaphore::acquire
  */
-void OSemaphore::acquire(unsigned int id){
+void OSemaphore::acquire(){
     //Incrément du nombre de threads voulants acquérir le sémaphore
     mutex.lock();
     nb_access ++;
     if (nb_access > initial_capacity) {
         // si le nombre de threads appelant acquire est > n on le rajoute dans la liste d'attente
-        ReadWriteLogger::getInstance()->addWaiting(name, id);
+        ReadWriteLogger::getInstance()->addWaiting(name);
     }
     mutex.unlock(); // libération du mutex
     sem.acquire();
 }
 
-void OSemaphore::release(unsigned int id){
+void OSemaphore::release(){
     mutex.lock();
     if(nb_access > initial_capacity){
-        ReadWriteLogger::getInstance()->removeWaiting(name, id);
+        ReadWriteLogger::getInstance()->removeWaiting(name);
     }
     nb_access --;
     sem.release();

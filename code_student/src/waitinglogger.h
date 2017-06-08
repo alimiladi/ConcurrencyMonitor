@@ -35,17 +35,14 @@ public:
     static WaitingLogger *getInstance();
 
     //affiche les logs générés par un thread
-    void printLogs(unsigned int id);
+    void printLogs();
 
     //set la taille du tableau des logs, un emplacement pour chaque thread
     void setSizeLogs(unsigned int nbThreads);
 
-    //pour vider les logs d'un thread => appelé lors du resume du synchrocontroller
-    void clearLogs(unsigned int id);
+    void addWaiting(const QString& objectName);
 
-    void addWaiting(const QString& objectName, unsigned int id);
-
-    void removeWaiting(const QString& objectName, unsigned int id);
+    void removeWaiting(const QString& objectName);
 
 
     /**
@@ -67,7 +64,7 @@ protected:
      * In this first version it could simply modify the display in
      * the terminal.
      */
-    virtual void updateView(unsigned int id);
+    virtual void updateView();
 
     QList<WaitingQueue *> queues;
     QMutex mutex;
@@ -89,8 +86,8 @@ public:
 
     QStringList getResourceAccesses() const;
 
-    void addResourceAccess(unsigned int id);
-    void removeResourceAccess(unsigned int id);
+    void addResourceAccess();
+    void removeResourceAccess();
 
     static ReadWriteLogger *getInstance();
 
@@ -107,7 +104,7 @@ protected:
      * the terminal.
      */
     //met a jour les logs de un thread
-    virtual void updateView(unsigned int id);
+    virtual void updateView();
 
     QStringList resourceAccesses;
 

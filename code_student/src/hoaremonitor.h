@@ -13,9 +13,7 @@
  */
 class HoareMonitor
 {
-protected:
-
-    HoareMonitor();
+public:
 
     class Condition
     {
@@ -27,6 +25,9 @@ protected:
         QSemaphore waitingSem;
         int nbWaiting;
     };
+
+
+    HoareMonitor();
 
     /**
      * This function has to be called at the beginning of each function being

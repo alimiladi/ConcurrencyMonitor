@@ -17,10 +17,10 @@ class AbstractReaderWriter {
 public:
     AbstractReaderWriter(){};
     virtual ~AbstractReaderWriter(){};
-    virtual void lockReading(unsigned int id)   = 0;
-    virtual void lockWriting(unsigned int id)   = 0;
-    virtual void unlockReading(unsigned int id) = 0;
-    virtual void unlockWriting(unsigned int id) = 0;
+    virtual void lockReading()   = 0;
+    virtual void lockWriting()   = 0;
+    virtual void unlockReading() = 0;
+    virtual void unlockWriting() = 0;
 };
 
 #endif // ABSTRACTREADERWRITER_H

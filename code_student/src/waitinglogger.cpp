@@ -1,13 +1,11 @@
 #include "waitinglogger.h"
 #include "iostream"
 #include <QThread>
+#include "reader_writer_thread.h"
 
-void WaitingLogger::printLogs(unsigned int id){
+void WaitingLogger::printLogs(){
+    unsigned int id = ((ReaderWriterThread*)ReaderWriterThread::currentThread())->getId();
     std::cout << qPrintable(*(this->logs->at(id))) << std::endl;
-}
-
-void WaitingLogger::clearLogs(unsigned int id){
-    this->logs->at(id)->clear();
 }
 
 
@@ -45,12 +43,12 @@ QList<WaitingQueue *> WaitingLogger::getQueues() const
     return queues;
 }
 
-void WaitingLogger::updateView(unsigned int id)
+void WaitingLogger::updateView()
 {
 
 }
 
-void WaitingLogger::addWaiting(const QString &objectName, unsigned int id)
+void WaitingLogger::addWaiting(const QString &objectName)
 {
     mutex.lock();
     QString threadName = QThread::currentThread()->objectName();
@@ -64,18 +62,18 @@ void WaitingLogger::addWaiting(const QString &objectName, unsigned int id)
         queue->addThreadName(threadName);
         queues.append(queue);
     }
-    updateView(id);
+    updateView();
     mutex.unlock();
 }
 
-void WaitingLogger::removeWaiting(const QString &objectName, unsigned int id)
+void WaitingLogger::removeWaiting(const QString &objectName)
 {
     mutex.lock();
     QString threadName = QThread::currentThread()->objectName();
     WaitingQueue *queue = contains(objectName);
     if(queue != nullptr){
         queue->removeThreadName(threadName);
-        updateView(id);
+        updateView();
     }
     mutex.unlock();
 }
@@ -90,7 +88,7 @@ ReadWriteLogger::ReadWriteLogger()
 
 }
 
-void ReadWriteLogger::addResourceAccess(unsigned int id)
+void ReadWriteLogger::addResourceAccess()
 {
     mutex.lock();
     QString threadName = QThread::currentThread()->objectName();
@@ -99,22 +97,24 @@ void ReadWriteLogger::addResourceAccess(unsigned int id)
     foreach (WaitingQueue *queue, queues) {
         queue->removeThreadName(threadName);
     }
-    updateView(id);
+    updateView();
     mutex.unlock();
 }
 
-void ReadWriteLogger::removeResourceAccess(unsigned int id)
+void ReadWriteLogger::removeResourceAccess()
 {
     mutex.lock();
     QString threadName = QThread::currentThread()->objectName();
     resourceAccesses.removeOne(threadName);
-    updateView(id);
+    updateView();
     mutex.unlock();
 }
 
 
-void ReadWriteLogger::updateView(unsigned int id)
+void ReadWriteLogger::updateView()
 {
+
+    unsigned int id = ((ReaderWriterThread*)ReaderWriterThread::currentThread())->getId();
 
     //avant que le thread écrive ses logs,
     //il doit effacer les précédents car on sait qu'ils ont déjà été affichés.
@@ -167,8 +167,3 @@ void WaitingQueue::removeThreadName(const QString &threadName){
     threadNames.removeOne(threadName);
 }
 
-//void ReadWriteLogger::print(QString string){
-//    mutex.lock();
-//    std::cout << qPrintable(string) << std::endl;
-//    mutex.unlock();
-//}

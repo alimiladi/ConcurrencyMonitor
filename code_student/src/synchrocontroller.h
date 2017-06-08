@@ -27,13 +27,12 @@ public:
 
     static SynchroController *getInstance();
 
-    void pause(unsigned int id, bool firstTime);
+    void pause(bool firstTime);
 
     void resume();
 
     //getters
     QSemaphore * getMainWaiting();
-    //QSemaphore * getThreadWaiting();
 
 };
 

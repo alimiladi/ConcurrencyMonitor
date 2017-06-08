@@ -1,8 +1,7 @@
 
 #include <QApplication>
 #include "synchrocontroller.h"
-#include "taskwriter.h"
-#include "taskreader.h"
+#include "reader_writer_thread.h"
 #include <QDebug>
 #include "waitinglogger.h"
 

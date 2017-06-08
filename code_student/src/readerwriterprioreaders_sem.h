@@ -36,32 +36,32 @@ public:
       writer.setName("writer");
   }
 
-  void lockReading(unsigned int id) {
-    mutexReaders.acquire(id);
+  void lockReading() {
+    mutexReaders.acquire();
     nbReaders++;
     if (nbReaders==1) {
-      writer.acquire(id);
+      writer.acquire();
     }
-    mutexReaders.release(id);
+    mutexReaders.release();
   }
 
-  void unlockReading(unsigned int id) {
-    mutexReaders.acquire(id);
+  void unlockReading() {
+    mutexReaders.acquire();
     nbReaders--;
     if (nbReaders==0) {
-      writer.release(id);
+      writer.release();
     }
-    mutexReaders.release(id);
+    mutexReaders.release();
   }
 
-  void lockWriting(unsigned int id) {
-    mutexWriters.acquire(id);
-    writer.acquire(id);
+  void lockWriting() {
+    mutexWriters.acquire();
+    writer.acquire();
   }
 
-  void unlockWriting(unsigned int id) {
-    writer.release(id);
-    mutexWriters.release(id);
+  void unlockWriting() {
+    writer.release();
+    mutexWriters.release();
   }
 };
 

@@ -1,7 +1,10 @@
 #ifndef PMUTEX_H
 #define PMUTEX_H
 
+#include <QSemaphore>
 #include <QMutex>
+
+#include "waitinglogger.h"
 
 
 class OMutex
@@ -15,11 +18,16 @@ public:
 
     void unlock();
 
-    QMutex *getUnderlyingMutex();
+    void setName(QString name);
+
+    void setThreadName(QString thread_name);
+
 
 private:
     QMutex mutex;
-    QMutex prevMutex;
+    QSemaphore sem;
+    unsigned int nb_acces;
+    QString name, thread_name;
 
 };
 

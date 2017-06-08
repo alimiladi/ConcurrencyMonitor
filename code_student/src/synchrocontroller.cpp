@@ -19,7 +19,7 @@ SynchroController *SynchroController::getInstance()
     return instance;
 }
 
-void SynchroController::pause(unsigned int id, bool firstTime)
+void SynchroController::pause(bool firstTime)
 {
     fifo->acquire();
     mutex.lock();
@@ -29,7 +29,7 @@ void SynchroController::pause(unsigned int id, bool firstTime)
         std::cout << "Le " << qPrintable(QThread::currentThread()->objectName()) << " demande pour la premire fois l acces a la ressource." << std::endl;
     }else{
         //on affiche les logs qui ont été fait depuis la dernière pause
-        WaitingLogger::getInstance()->printLogs(id);
+        WaitingLogger::getInstance()->printLogs();
     }
 
     //on redonne la main au main thread pour demander à l'utilisateur la suite
@@ -50,7 +50,3 @@ void SynchroController::resume()
 QSemaphore* SynchroController::getMainWaiting(){
     return mainWaiting;
 }
-
-/*QSemaphore* SynchroController::getThreadWaiting(){
-    return threadWaiting;
-}*/

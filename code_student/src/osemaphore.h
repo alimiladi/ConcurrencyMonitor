@@ -17,20 +17,18 @@ public:
     //! Constructeur pareil à celui de QSemaphore
     OSemaphore(int n);
 
-    void acquire(unsigned int id);
+    void acquire();
 
-    void release(unsigned int id);
+    void release();
 
     bool tryAcquire();
 
     void setName(QString name);
 
-    //void setThreadName(QString name);
 
 private:
     QSemaphore sem;
-    QString name = "sem",
-    thread_name = "thread"; //! nom du thread bloqué sur ce sémaphore
+    QString name;
     unsigned int nb_access, //nombre de threads ayant essayé d'acquérir le sémaphore
     initial_capacity; // capacité avec laquelle le sémaphore est initialisé
     QMutex mutex; // utilisé pour protéger les accès à la variable nb_access

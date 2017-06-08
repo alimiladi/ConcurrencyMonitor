@@ -1,12 +1,22 @@
 #ifndef OHOAREMONITOR_H
 #define OHOAREMONITOR_H
 
+#include "owaitcondition.h"
+#include "hoaremonitor.h"
+
 
 class OHoareMonitor
 {
 protected:
 
-    class Condition;
+    class Condition{
+    public:
+        Condition();
+        HoareMonitor::Condition *getCondition();
+
+    private:
+        HoareMonitor::Condition condition;
+    };
 
 public:
     OHoareMonitor();
@@ -38,6 +48,15 @@ public:
      */
     void signal(Condition &cond);
 
+    void setName(QString name){
+
+    }
+
+
+private:
+
+    HoareMonitor hoareMonitor;
+    QString name;
 };
 
 #endif // OHOAREMONITOR_H
