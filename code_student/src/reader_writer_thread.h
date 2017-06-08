@@ -16,6 +16,14 @@ public:
         return id;
     }
 
+    unsigned int getFirstTime(){
+        return firstTime;
+    }
+
+    void setFirstTime(bool value){
+        this->firstTime = value;
+    }
+
 
 protected:
 
@@ -25,6 +33,8 @@ protected:
 
     //identifiant unique pour les logs
     unsigned int id;
+
+    bool firstTime = true;
 
     AbstractReaderWriter *resource;
 };

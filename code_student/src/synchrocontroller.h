@@ -27,7 +27,7 @@ public:
 
     static SynchroController *getInstance();
 
-    void pause(bool firstTime);
+    void pause();
 
     void resume();
 

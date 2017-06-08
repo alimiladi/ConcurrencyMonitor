@@ -2,6 +2,7 @@
 #include <iostream>
 #include "waitinglogger.h"
 #include <QThread>
+#include "reader_writer_thread.h"
 
 
 SynchroController::SynchroController():
@@ -19,10 +20,12 @@ SynchroController *SynchroController::getInstance()
     return instance;
 }
 
-void SynchroController::pause(bool firstTime)
+void SynchroController::pause()
 {
     fifo->acquire();
     mutex.lock();
+
+    bool firstTime = ((ReaderWriterThread*)ReaderWriterThread::currentThread())->getFirstTime();
 
     //si c'est la première fois que le thread se met en pause, il n y a pas de logs à afficher
     if(firstTime){

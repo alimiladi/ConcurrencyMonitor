@@ -5,6 +5,7 @@
 ReaderWriterThread::ReaderWriterThread(){}
 void ReaderWriterThread::run(){}
 
+
 TaskReader::TaskReader(const unsigned int &id, const QString &name, AbstractReaderWriter *resource){
 
     this->id = id;
@@ -17,15 +18,14 @@ TaskReader::TaskReader(){}
 
 void TaskReader::run(){
 
-    bool firstTime = true;
 
     while(1) {
 
-        SynchroController::getInstance()->pause(firstTime);
-        firstTime = false;
+        SynchroController::getInstance()->pause();
+        setFirstTime(false);
         resource->lockReading();
         ReadWriteLogger::getInstance()->addResourceAccess();
-        SynchroController::getInstance()->pause(firstTime);
+        SynchroController::getInstance()->pause();
         resource->unlockReading();
         ReadWriteLogger::getInstance()->removeResourceAccess();
     }
@@ -43,14 +43,12 @@ TaskWriter::TaskWriter(){}
 
 void TaskWriter::run(){
 
-    bool firstTime = true;
-
     while(1) {
-        SynchroController::getInstance()->pause(firstTime);
-        firstTime = false;
+        SynchroController::getInstance()->pause();
+        setFirstTime(false);
         resource->lockWriting();
         ReadWriteLogger::getInstance()->addResourceAccess();
-        SynchroController::getInstance()->pause(firstTime);
+        SynchroController::getInstance()->pause();
         resource->unlockWriting();
         ReadWriteLogger::getInstance()->removeResourceAccess();
     }
