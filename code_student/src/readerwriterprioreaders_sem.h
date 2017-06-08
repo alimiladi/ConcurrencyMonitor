@@ -13,16 +13,15 @@
 #ifndef READERWRITERPRIOREADERSSEM_H
 #define READERWRITERPRIOREADERSSEM_H
 
-#include <QSemaphore>
-
+#include "osemaphore.h"
 #include "abstractreaderwriter.h"
 
 class ReaderWriterPrioReaders_Sem :
   public AbstractReaderWriter {
 protected:
-  QSemaphore mutexReaders;
-  QSemaphore mutexWriters;
-  QSemaphore writer;
+  OSemaphore mutexReaders;
+  OSemaphore mutexWriters;
+  OSemaphore writer;
   int nbReaders;
   QString name;
 
@@ -31,35 +30,38 @@ public:
   mutexReaders(1),
   mutexWriters(1),
   writer(1),
-  nbReaders(0),
-  name("ReaderWriterPrioReaders_Sem"){}
+  nbReaders(0){
+      mutexReaders.setName("mutexReaders");
+      mutexWriters.setName("mutexWriters");
+      writer.setName("writer");
+  }
 
-  void lockReading() {
-    mutexReaders.acquire();
+  void lockReading(unsigned int id) {
+    mutexReaders.acquire(id);
     nbReaders++;
     if (nbReaders==1) {
-      writer.acquire();
+      writer.acquire(id);
     }
-    mutexReaders.release();
+    mutexReaders.release(id);
   }
 
-  void unlockReading() {
-    mutexReaders.acquire();
+  void unlockReading(unsigned int id) {
+    mutexReaders.acquire(id);
     nbReaders--;
     if (nbReaders==0) {
-      writer.release();
+      writer.release(id);
     }
-    mutexReaders.release();
+    mutexReaders.release(id);
   }
 
-  void lockWriting() {
-    mutexWriters.acquire();
-    writer.acquire();
+  void lockWriting(unsigned int id) {
+    mutexWriters.acquire(id);
+    writer.acquire(id);
   }
 
-  void unlockWriting() {
-    writer.release();
-    mutexWriters.release();
+  void unlockWriting(unsigned int id) {
+    writer.release(id);
+    mutexWriters.release(id);
   }
 };
 

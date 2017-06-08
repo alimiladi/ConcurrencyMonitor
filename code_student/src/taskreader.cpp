@@ -1,6 +1,5 @@
 #include "taskreader.h"
 #include "stdlib.h"
-//#include "abstractreaderwriter.h"
 #include "waitinglogger.h"
 
 

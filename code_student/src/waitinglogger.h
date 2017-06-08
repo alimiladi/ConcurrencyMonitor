@@ -75,6 +75,9 @@ protected:
     //contient les logs à afficher
     QList<QString*>* logs = new QList<QString*>();
 
+    //mappage de l'id de log avec l'identifiant QThread de chaque thread
+    QMap<unsigned int, unsigned int>* map_QThreadId_to_logId = new QMap<unsigned int, unsigned int>();
+
 
 };
 

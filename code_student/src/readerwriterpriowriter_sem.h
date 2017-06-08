@@ -26,10 +26,7 @@ protected:
   OSemaphore reader;
   OSemaphore writer;
   OSemaphore mutex;
-
   int nbReaders, nbWriters;
-
-
 
 
 public:

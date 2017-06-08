@@ -21,10 +21,10 @@ int main(int argc, char *argv[])
     std::cout << "-----------LANCEMENT SCENARIO----------" << std::endl;
 
     //création de la ressource partagée
-//    ReaderWriterEqual_Sem *resource;
-//    ReaderWriterPrioReaders_Sem *resource;
-//    ReaderWriterPrioReading_Sem *resource;
-    ReaderWriterPrioWriter_Sem *resource = new ReaderWriterPrioWriter_Sem();
+//    ReaderWriterEqual_Sem *resource = new ReaderWriterEqual_Sem();
+      ReaderWriterPrioReaders_Sem *resource = new ReaderWriterPrioReaders_Sem();
+//    ReaderWriterPrioReading_Sem *resource = new ReaderWriterPrioReading_Sem();
+    //ReaderWriterPrioWriter_Sem *resource = new ReaderWriterPrioWriter_Sem();
 
     //on set le tableau des logs
     WaitingLogger::getInstance()->setSizeLogs(NB_THREADS_READER+NB_THREADS_WRITER);
