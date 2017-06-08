@@ -34,6 +34,7 @@ void WaitingLogger::updateView()
 
 void WaitingLogger::addWaiting(const QString &threadName, const QString &objectName)
 {
+    mutex.lock();
     WaitingQueue *queue = contains(objectName);
     if(queue != nullptr){
         queue->addThreadName(threadName);
@@ -45,15 +46,18 @@ void WaitingLogger::addWaiting(const QString &threadName, const QString &objectN
         queues.append(queue);
     }
     updateView();
+    mutex.unlock();
 }
 
 void WaitingLogger::removeWaiting(const QString &threadName, const QString &objectName)
 {
+    mutex.lock();
     WaitingQueue *queue = contains(objectName);
     if(queue != nullptr){
         queue->removeThreadName(threadName);
         updateView();
     }
+    mutex.unlock();
 }
 
 QStringList ReadWriteLogger::getResourceAccesses() const
@@ -68,20 +72,24 @@ ReadWriteLogger::ReadWriteLogger()
 
 void ReadWriteLogger::addResourceAccess(const QString &threadName)
 {
+    mutex.lock();
     resourceAccesses.append(threadName);
     updateView();
+    mutex.unlock();
 }
 
 void ReadWriteLogger::removeResourceAccess(const QString &threadName)
 {
+    mutex.lock();
     resourceAccesses.removeOne(threadName);
     updateView();
+    mutex.unlock();
 }
 
 
 void ReadWriteLogger::updateView()
 {
-    mutex.lock();
+    //mutex.lock();
     QString string;
     for(int i = 0; i< queues.size(); i ++){
         string.append(queues.at(i)->getName()).append(" <- ");
@@ -102,7 +110,7 @@ void ReadWriteLogger::updateView()
     }
     string.append("\n");
     std::cout << qPrintable(string) << std::endl;
-    mutex.unlock();
+    //mutex.unlock();
 }
 
 

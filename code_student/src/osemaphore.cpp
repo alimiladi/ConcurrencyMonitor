@@ -20,8 +20,8 @@ void OSemaphore::setName(QString name){
     this->name = name;
 }
 
-void OSemaphore::setThreadName(QString name){
-    this->thread_name = name;
+void OSemaphore::setThreadName(QString thread_name){
+    this->thread_name = thread_name;
 }
 
 /**

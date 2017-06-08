@@ -29,7 +29,6 @@ int main(int argc, char *argv[])
     //création des threads rédacteurs
     QList<TaskWriter*> *writersList = new QList<TaskWriter*>();
     for(int i = 0; i < NB_THREADS_WRITER; i++){
-//        std::cout << "Creation du redacteur no : " << i << std::endl;
         writersList->append(new TaskWriter(i, QString("redacteur %1").arg(i), resource));
         writersList->at(i)->start();
     }
@@ -37,7 +36,6 @@ int main(int argc, char *argv[])
     //création des threads lecteurs
     QList<TaskReader*> *readersList = new QList<TaskReader*>();
     for(int i = 0; i < NB_THREADS_READER; i++){
-//        std::cout << "Creation du lecteur no : " << i << std::endl;
         readersList->append(new TaskReader(i, QString("lecteur %1").arg(i), resource));
         readersList->at(i)->start();
     }
@@ -47,10 +45,8 @@ int main(int argc, char *argv[])
     bool ko;
     while (continuing) {
 
-//        //on attend la pause d'un thread
+        //on attend la pause d'un thread
         SynchroController::getInstance()->getMainWaiting()->acquire();
-
-//        synchroController->pause();
 
         // Wait for a key press
         do {
@@ -68,8 +64,6 @@ int main(int argc, char *argv[])
 
         // If key is <y>
         if(saisie == 'y'){
-//            std::cout << "encore" << std::endl;
-//            SynchroController::getInstance()->resume();
             SynchroController::getInstance()->resume();
         }
         // If key was <n>
