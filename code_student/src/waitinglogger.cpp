@@ -142,8 +142,6 @@ void ReadWriteLogger::updateView()
         }
     }
     logs->at(id)->append("\n***************************************************\n");
-
-//    printLogs();
 }
 
 

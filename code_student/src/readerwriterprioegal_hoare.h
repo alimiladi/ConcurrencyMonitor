@@ -44,7 +44,7 @@ public:
         monitorIn();
         nbLecture --;
         if (nbLecture == 0)
-            signal(attenteEcriture);
+            signal(attenteLecture);
         monitorOut();
     }
 
@@ -62,7 +62,7 @@ public:
         monitorIn();
         nbEcriture --;
         if (nbEcriture == 0)
-            signal(attenteLecture);
+            signal(attenteEcriture);
         monitorOut();
     }
 };
