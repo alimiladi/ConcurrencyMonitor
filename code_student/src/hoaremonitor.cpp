@@ -1,5 +1,4 @@
 #include "hoaremonitor.h"
-// Test push
 
 HoareMonitor::Condition::Condition() : waitingSem(0), nbWaiting(0) {}
 
