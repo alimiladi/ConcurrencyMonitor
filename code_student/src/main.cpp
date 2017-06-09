@@ -37,10 +37,10 @@ int main(int argc, char *argv[])
     //ReaderWriterPrioWriter_Sem *resource = new ReaderWriterPrioWriter_Sem();
 
     //création de la ressource partagée avec Mesa
-    ReaderWriterPrioWriter_Mesa *resource = new ReaderWriterPrioWriter_Mesa();
+//    ReaderWriterPrioWriter_Mesa *resource = new ReaderWriterPrioWriter_Mesa();
 
     //création de la ressource partagée avec Hoare
-    //ReaderWriterPrioWriter_Hoare *resource = new ReaderWriterPrioWriter_Hoare();
+    ReaderWriterPrioWriter_Hoare *resource = new ReaderWriterPrioWriter_Hoare();
 
 
     //on set le tableau des logs

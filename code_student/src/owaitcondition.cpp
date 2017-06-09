@@ -15,6 +15,7 @@ bool OWaitCondition::wait(OMutex *lockedMutex){
                                                                     // le thread se retir lui même de la queue d'attente du logger
     lockedMutex->lock(); // revérouillage du même lockedMutex pour garantir l'atomicité de la transition de l'état waiting à l'état
                          // vérouillé
+    mutex.unlock();
     return result;
 }
 

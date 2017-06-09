@@ -13,9 +13,12 @@ protected:
     public:
         Condition();
         HoareMonitor::Condition *getCondition();
+        QString getName();
+        void setName(QString name);
 
     private:
         HoareMonitor::Condition condition;
+        QString name;
     };
 
 public:
@@ -48,15 +51,10 @@ public:
      */
     void signal(Condition &cond);
 
-    void setName(QString name){
-
-    }
-
 
 private:
 
     HoareMonitor hoareMonitor;
-    QString name;
 };
 
 #endif // OHOAREMONITOR_H

@@ -26,7 +26,10 @@ public:
         nbLecteurs(0),
         redactionEnCours(false),
         nbRedacteursEnAttente(0),
-        name("Reader-Writer-PrioWriter_Hoare"){}
+        name("Reader-Writer-PrioWriter_Hoare"){
+        attenteLecture.setName("attenteLecture");
+        attenteRedaction.setName("attenteRedaction");
+    }
 
     void lockReading() {
         monitorIn();
