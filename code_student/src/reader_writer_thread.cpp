@@ -54,7 +54,7 @@ void TaskWriter::run(){
         resource->lockWriting();
         waitingLogger->addResourceAccess();
         synchroController->pause();
-        waitingLogger->removeResourceAccess();
         resource->unlockWriting();
+        waitingLogger->removeResourceAccess();
     }
 }
