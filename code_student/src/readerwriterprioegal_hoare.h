@@ -50,7 +50,7 @@ public:
 
     void lockWriting() {
         monitorIn();
-        if (nbLecture > 0) {
+        if (nbLecture > 0 || nbEcriture > 0) {
             wait(attenteEcriture);
             signal(attenteEcriture);
         }

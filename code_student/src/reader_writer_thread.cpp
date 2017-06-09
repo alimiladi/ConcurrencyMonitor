@@ -31,8 +31,8 @@ void TaskReader::run(){
         resource->lockReading();
         waitingLogger->addResourceAccess();
         synchroController->pause();
-        resource->unlockReading();
         waitingLogger->removeResourceAccess();
+        resource->unlockReading();
     }
 }
 
@@ -54,7 +54,7 @@ void TaskWriter::run(){
         resource->lockWriting();
         waitingLogger->addResourceAccess();
         synchroController->pause();
-        resource->unlockWriting();
         waitingLogger->removeResourceAccess();
+        resource->unlockWriting();
     }
 }

@@ -163,7 +163,9 @@ void WaitingQueue::setName(const QString &name){
 }
 
 void WaitingQueue::addThreadName(const QString &threadName){
-    threadNames.append(threadName);
+    if(!threadNames.contains(threadName)){
+        threadNames.append(threadName);
+    }
 }
 
 void WaitingQueue::removeThreadName(const QString &threadName){
