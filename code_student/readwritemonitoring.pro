@@ -34,4 +34,5 @@ HEADERS  +=  \
     src/readerwriterpriowriter_sem.h \
     src/reader_writer_thread.h \
     src/readerwriterpriowriter_mesa.h \
-    src/readerwriterpriowriter_hoare.h
+    src/readerwriterpriowriter_hoare.h \
+    src/readerwriterprioegal_mesa.h
