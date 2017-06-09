@@ -100,16 +100,6 @@ int main(int argc, char *argv[])
 
         // If key is <y>
         if(saisie == 'y'){
-
-            //on efface tous les logs
-            //si on efface depuis ici, les logs seront plus détaillés mais il y aura des étapes vide
-            //c'est péférable d'utiliser le Waitinglogger et sa méthode updateView pour effacer les logs
-            //à chaque fois qu'on veut en écrire un nouveau. Même si cela procure parfois l'effet d'étape sautées
-            //pour l'utilisateur qui regarde les logs. Nous avons constaté que cela arrive très rarement.
-            /*for(int i = 0 ; i < NB_THREADS_READER+NB_THREADS_WRITER; i++){
-                WaitingLogger::getInstance()->clearLogs(i);
-            }*/
-
             SynchroController::getInstance()->resume();
         }
         // If key was <n>
