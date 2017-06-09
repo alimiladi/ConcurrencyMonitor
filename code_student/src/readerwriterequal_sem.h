@@ -13,16 +13,16 @@
 #ifndef READERWRITEREQUALSEM_H
 #define READERWRITEREQUALSEM_H
 
-#include <QSemaphore>
+#include "osemaphore.h"
 
 #include "abstractreaderwriter.h"
 
 
 class ReaderWriterEqual_Sem : public AbstractReaderWriter {
 protected:
-  QSemaphore mutex;
-  QSemaphore fifo;
-  QSemaphore writer;
+  OSemaphore mutex;
+  OSemaphore fifo;
+  OSemaphore writer;
   int nbReaders;
   QString name;
 
@@ -37,7 +37,12 @@ public:
     fifo(1),
     writer(1),
     nbReaders(0),
-    name("Reader-Writer-Equal_Sem"){}
+    name("Reader-Writer-Equal_Sem")
+  {
+    mutex.setName("mutex");
+    fifo.setName("fifo");
+    writer.setName("writer");
+  }
 
   void lockReading() {
     fifo.acquire();
