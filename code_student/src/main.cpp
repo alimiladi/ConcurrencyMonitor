@@ -18,6 +18,8 @@
 
 //les 4 types (priorités) de ressources partagées avec Hoare
 #include "readerwriterpriowriter_hoare.h"
+//en test:
+#include "readerwriterprioegal_hoare.h"
 
 #define NB_THREADS_READER 3
 #define NB_THREADS_WRITER 3
@@ -41,10 +43,12 @@ int main(int argc, char *argv[])
     //création de la ressource partagée avec Mesa
 //    ReaderWriterPrioWriter_Mesa *resource = new ReaderWriterPrioWriter_Mesa();
     //en test(ne fonctionne pas encore bien):
-    ReaderWriterPrioEgal_Mesa *resource = new ReaderWriterPrioEgal_Mesa();
+    //ReaderWriterPrioEgal_Mesa *resource = new ReaderWriterPrioEgal_Mesa();
 
     //création de la ressource partagée avec Hoare
 //    ReaderWriterPrioWriter_Hoare *resource = new ReaderWriterPrioWriter_Hoare();
+    //en test(ne fonctionne pas encore bien):
+    ReaderWriterPrioEgal_Hoare *resource = new ReaderWriterPrioEgal_Hoare();
 
 
     //on set le tableau des logs
@@ -87,7 +91,7 @@ int main(int argc, char *argv[])
         // Wait for a key press
         do {
 
-           std::cout << "Do you want to continue? (y or n): ";
+           std::cout << "Voulez-vous continuer? (y or n): ";
            std::cout.flush();
            std::cin >> saisie;
            ko = std::cin.fail() || (saisie != 'y' && saisie != 'n');
