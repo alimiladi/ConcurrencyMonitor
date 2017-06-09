@@ -49,7 +49,7 @@ void TaskWriter::run(){
         resource->lockWriting();
         ReadWriteLogger::getInstance()->addResourceAccess();
         SynchroController::getInstance()->pause();
-        resource->unlockWriting();
         ReadWriteLogger::getInstance()->removeResourceAccess();
+        resource->unlockWriting();
     }
 }

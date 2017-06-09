@@ -34,17 +34,17 @@ int main(int argc, char *argv[])
 
     //création de la ressource partagée avec sémaphores
     //ReaderWriterEqual_Sem *resource = new ReaderWriterEqual_Sem();
-    ReaderWriterPrioReaders_Sem *resource = new ReaderWriterPrioReaders_Sem();
+//    ReaderWriterPrioReaders_Sem *resource = new ReaderWriterPrioReaders_Sem();
     //ReaderWriterPrioReading_Sem *resource = new ReaderWriterPrioReading_Sem();
-    //ReaderWriterPrioWriter_Sem *resource = new ReaderWriterPrioWriter_Sem();
+    ReaderWriterPrioWriter_Sem *resource = new ReaderWriterPrioWriter_Sem();
 
     //création de la ressource partagée avec Mesa
-    //ReaderWriterPrioWriter_Mesa *resource = new ReaderWriterPrioWriter_Mesa();
+//    ReaderWriterPrioWriter_Mesa *resource = new ReaderWriterPrioWriter_Mesa();
     //en test(ne fonctionne pas encore bien):
-    //ReaderWriterPrioEgal_Mesa *resource = new ReaderWriterPrioEgal_Mesa();
+//    ReaderWriterPrioEgal_Mesa *resource = new ReaderWriterPrioEgal_Mesa();
 
     //création de la ressource partagée avec Hoare
-    //ReaderWriterPrioWriter_Hoare *resource = new ReaderWriterPrioWriter_Hoare();
+//    ReaderWriterPrioWriter_Hoare *resource = new ReaderWriterPrioWriter_Hoare();
 
 
     //on set le tableau des logs

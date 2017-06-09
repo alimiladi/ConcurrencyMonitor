@@ -109,6 +109,10 @@ void ReadWriteLogger::removeResourceAccess()
     mutex.lock();
     QString threadName = QThread::currentThread()->objectName();
     resourceAccesses.removeOne(threadName);
+    //on enlève le thread de toutes les listes d'attente car il est dans la ressource
+    foreach (WaitingQueue *queue, queues) {
+        queue->removeThreadName(threadName);
+    }
     updateView();
     mutex.unlock();
 }
@@ -143,7 +147,7 @@ void ReadWriteLogger::updateView()
     }
     logs->at(id)->append("\n***************************************************\n");
 
-
+//    printLogs();
 }
 
 
@@ -163,7 +167,8 @@ void WaitingQueue::setName(const QString &name){
 }
 
 void WaitingQueue::addThreadName(const QString &threadName){
-    threadNames.append(threadName);
+    if(!threadNames.contains(threadName)) //TODO UPDATE ICI
+        threadNames.append(threadName);
 }
 
 void WaitingQueue::removeThreadName(const QString &threadName){
