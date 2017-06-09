@@ -1,13 +1,8 @@
 #ifndef READERWRITERPRIOWRITER_MESA_H
 #define READERWRITERPRIOWRITER_MESA_H
 
-
-#include <QMutex>
-#include <QSemaphore>
 #include "owaitcondition.h"
-
 #include "abstractreaderwriter.h"
-#include "hoaremonitor.h"
 
 
 class ReaderWriterPrioWriter_Mesa :
