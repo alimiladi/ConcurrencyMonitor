@@ -14,15 +14,15 @@
 #define READERWRITERPRIOREADINGSEM_H
 
 
-#include <QSemaphore>
+#include "osemaphore.h"
 
 #include "abstractreaderwriter.h"
 
 
 class ReaderWriterPrioReading_Sem : public AbstractReaderWriter {
 protected:
-  QSemaphore mutexReaders;
-  QSemaphore writer;
+  OSemaphore mutexReaders;
+  OSemaphore writer;
   int nbReaders;
   QString name;
 
@@ -36,7 +36,10 @@ public:
   mutexReaders(1),
   writer(1),
   nbReaders(0),
-  name("Reader-Writer-PrioReading_Sem"){}
+  name("Reader-Writer-PrioReading_Sem"){
+      mutexReaders.setName("mutexReaders");
+      writer.setName("writer");
+  }
 
   void lockReading() {
     mutexReaders.acquire();

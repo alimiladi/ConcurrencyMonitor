@@ -29,7 +29,7 @@ void SynchroController::pause()
 
     //si c'est la première fois que le thread se met en pause, il n y a pas de logs à afficher
     if(firstTime){
-        std::cout << "Le " << qPrintable(QThread::currentThread()->objectName()) << " demande pour la premire fois l acces a la ressource." << std::endl;
+        std::cout << "Le " << qPrintable(QThread::currentThread()->objectName()) << " va demander pour la premire fois l acces a la ressource." << std::endl;
     }else{
         //on affiche les logs qui ont été fait depuis la dernière pause
         WaitingLogger::getInstance()->printLogs();

@@ -6,6 +6,9 @@
 void WaitingLogger::printLogs(){
     unsigned int id = ((ReaderWriterThread*)ReaderWriterThread::currentThread())->getId();
     std::cout << qPrintable(*(this->logs->at(id))) << std::endl;
+    //on efface les logs pour le thread courant
+    logs->at(id)->clear();
+
 }
 
 
@@ -118,7 +121,7 @@ void ReadWriteLogger::updateView()
 
     //avant que le thread écrive ses logs,
     //il doit effacer les précédents car on sait qu'ils ont déjà été affichés.
-    logs->at(id)->clear();
+    //logs->at(id)->clear();
 
     logs->at(id)->append("\n***************************************************\n");
     for(int i = 0; i< queues.size(); i ++){
