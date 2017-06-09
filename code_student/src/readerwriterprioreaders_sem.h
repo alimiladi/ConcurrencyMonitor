@@ -26,11 +26,17 @@ protected:
   QString name;
 
 public:
+
+  QString getName(){
+      return name;
+  }
+
   ReaderWriterPrioReaders_Sem() :
   mutexReaders(1),
   mutexWriters(1),
   writer(1),
-  nbReaders(0){
+  nbReaders(0),
+  name("Reader-Writer-PrioReaders_Sem"){
       mutexReaders.setName("mutexReaders");
       mutexWriters.setName("mutexWriters");
       writer.setName("writer");

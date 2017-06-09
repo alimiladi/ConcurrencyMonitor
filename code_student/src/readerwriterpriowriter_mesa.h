@@ -23,12 +23,20 @@ protected:
     int nbRedacteursEnAttente;
     bool redactionEnCours;
 
+    QString name;
+
 public:
+
+    QString getName(){
+        return name;
+    }
+
     ReaderWriterPrioWriter_Mesa() :
         nbLecteurs(0),
         nbLecteursEnAttente(0),
         nbRedacteursEnAttente(0),
-        redactionEnCours(false)
+        redactionEnCours(false),
+        name("Reader-Writer-PrioWriter_Mesa")
     {
         attenteEcriture.setName("attenteEcriture");
         attenteLecture.setName("attenteLecture");

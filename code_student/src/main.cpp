@@ -11,26 +11,50 @@
 #include "readerwriterprioreading_sem.h"
 #include "readerwriterpriowriter_sem.h"
 
+//les 4 types (priorités) de ressources partagées avec Mesa
+#include "readerwriterpriowriter_mesa.h"
+
+//les 4 types (priorités) de ressources partagées avec Hoare
+#include "readerwriterpriowriter_hoare.h"
+
 #define NB_THREADS_READER 3
 #define NB_THREADS_WRITER 3
 
 int main(int argc, char *argv[])
 {
 
-    std::cout << "-----------LANCEMENT SCENARIO----------" << std::endl;
+    //on récupère le synchrocontroller
+    SynchroController* synchroController = SynchroController::getInstance();
 
-    //création de la ressource partagée
-//    ReaderWriterEqual_Sem *resource = new ReaderWriterEqual_Sem();
-      ReaderWriterPrioReaders_Sem *resource = new ReaderWriterPrioReaders_Sem();
-//    ReaderWriterPrioReading_Sem *resource = new ReaderWriterPrioReading_Sem();
+
+    //on récupère le waitinglogger
+    WaitingLogger* waitingLogger = WaitingLogger::getInstance();
+
+    //création de la ressource partagée avec sémaphores
+    //ReaderWriterEqual_Sem *resource = new ReaderWriterEqual_Sem();
+    ReaderWriterPrioReaders_Sem *resource = new ReaderWriterPrioReaders_Sem();
+    //ReaderWriterPrioReading_Sem *resource = new ReaderWriterPrioReading_Sem();
     //ReaderWriterPrioWriter_Sem *resource = new ReaderWriterPrioWriter_Sem();
 
+    //création de la ressource partagée avec Mesa
+    //ReaderWriterPrioWriter_Mesa *resource = new ReaderWriterPrioWriter_Mesa();
+
+    //création de la ressource partagée avec Hoare
+    //ReaderWriterPrioWriter_Hoare *resource = new ReaderWriterPrioWriter_Hoare();
+
+
     //on set le tableau des logs
-    WaitingLogger::getInstance()->setSizeLogs(NB_THREADS_READER+NB_THREADS_WRITER);
+    waitingLogger->setSizeLogs(NB_THREADS_READER+NB_THREADS_WRITER);
 
     //on prépare le compteur pour les identifiants unique de logs
     //entre tous les threads (lecteur et rédacteurs)
     unsigned int logId = 0;
+
+
+    std::cout << "-----------------------------------------------------------------------" << std::endl;
+    std::cout << "----------------SCENARIO: "<< qPrintable(resource->getName()) << "----------------" << std::endl;
+    std::cout << "-----------------------------------------------------------------------" << std::endl;
+
 
     //création des threads rédacteurs
     QList<TaskWriter*> *writersList = new QList<TaskWriter*>();
@@ -54,7 +78,7 @@ int main(int argc, char *argv[])
     while (continuing) {
 
         //on attend la pause d'un thread
-        SynchroController::getInstance()->getMainWaiting()->acquire();
+        synchroController->getMainWaiting()->acquire();
 
         // Wait for a key press
         do {

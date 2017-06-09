@@ -27,9 +27,15 @@ protected:
   OSemaphore writer;
   OSemaphore mutex;
   int nbReaders, nbWriters;
+  QString name;
 
 
 public:
+
+  QString getName(){
+      return name;
+  }
+
   ReaderWriterPrioWriter_Sem() :
     mutexReaders(1),
     mutexWriters(1),
@@ -38,7 +44,8 @@ public:
     mutex(1),
 
     nbReaders(0),
-    nbWriters(0){
+    nbWriters(0),
+    name("Reader-Writer-PrioWriter_Semaphore"){
       mutex.setName("mutex");
       mutexReaders.setName("mutexReaders");
       mutexWriters.setName("mutexWriters");

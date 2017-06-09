@@ -27,12 +27,17 @@ protected:
   QString name;
 
 public:
+
+  QString getName(){
+      return name;
+  }
+
   ReaderWriterEqual_Sem() :
     mutex(1),
     fifo(1),
     writer(1),
     nbReaders(0),
-    name("ReaderWriterEqual_Sem"){}
+    name("Reader-Writer-Equal_Sem"){}
 
   void lockReading() {
     fifo.acquire();
