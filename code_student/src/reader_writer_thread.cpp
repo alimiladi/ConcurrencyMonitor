@@ -2,12 +2,17 @@
 #include "stdlib.h"
 #include "waitinglogger.h"
 
-ReaderWriterThread::ReaderWriterThread(){}
+ReaderWriterThread::ReaderWriterThread(){
+
+    synchroController = SynchroController::getInstance();
+    waitingLogger = ReadWriteLogger::getInstance();
+}
 void ReaderWriterThread::run(){}
 
 
 TaskReader::TaskReader(const unsigned int &id, const QString &name, AbstractReaderWriter *resource){
 
+    //ReaderWriterThread();
     this->id = id;
     QThread::setObjectName(name);
     this->resource = resource;
@@ -21,13 +26,13 @@ void TaskReader::run(){
 
     while(1) {
 
-        SynchroController::getInstance()->pause();
+        synchroController->pause();
         setFirstTime(false);
         resource->lockReading();
-        ReadWriteLogger::getInstance()->addResourceAccess();
-        SynchroController::getInstance()->pause();
+        waitingLogger->addResourceAccess();
+        synchroController->pause();
         resource->unlockReading();
-        ReadWriteLogger::getInstance()->removeResourceAccess();
+        waitingLogger->removeResourceAccess();
     }
 }
 
@@ -44,12 +49,12 @@ TaskWriter::TaskWriter(){}
 void TaskWriter::run(){
 
     while(1) {
-        SynchroController::getInstance()->pause();
+        synchroController->pause();
         setFirstTime(false);
         resource->lockWriting();
-        ReadWriteLogger::getInstance()->addResourceAccess();
-        SynchroController::getInstance()->pause();
-        ReadWriteLogger::getInstance()->removeResourceAccess();
+        waitingLogger->addResourceAccess();
+        synchroController->pause();
+        waitingLogger->removeResourceAccess();
         resource->unlockWriting();
     }
 }

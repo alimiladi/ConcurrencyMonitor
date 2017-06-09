@@ -7,6 +7,7 @@
 #include <QString>
 #include "abstractreaderwriter.h"
 #include "synchrocontroller.h"
+#include "waitinglogger.h"
 
 class ReaderWriterThread : public QThread{
 
@@ -37,6 +38,10 @@ protected:
     bool firstTime = true;
 
     AbstractReaderWriter *resource;
+
+    SynchroController* synchroController;
+
+    ReadWriteLogger* waitingLogger;
 };
 
 class TaskReader : public ReaderWriterThread{
