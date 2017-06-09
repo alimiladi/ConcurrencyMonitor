@@ -55,6 +55,9 @@ public:
 private:
 
     HoareMonitor hoareMonitor;
+    QMutex mutex;
+    QSemaphore lockedMutex;
+    unsigned int nb_waiting;
 };
 
 #endif // OHOAREMONITOR_H
