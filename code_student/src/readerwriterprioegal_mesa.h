@@ -51,9 +51,9 @@ public:
         mutex.lock();
         nbLecture --;
         if (nbLecture == 0) {
-            attenteEcriture.wakeAll();
-            nbEcriture = nbAttenteEcriture;
-            nbAttenteEcriture = 0;
+            attenteEcriture.wakeOne();
+            //nbAttenteEcriture--;
+            //nbEcriture++;
         }
         mutex.unlock();
     }
@@ -64,8 +64,8 @@ public:
             nbAttenteEcriture ++;
             attenteEcriture.wait(&mutex);
         }
-        else
-            nbEcriture ++;
+        nbAttenteEcriture--;
+        nbEcriture++;;
         mutex.unlock();
 
     }
