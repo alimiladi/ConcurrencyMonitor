@@ -6,7 +6,7 @@
 
 class ReaderWriterPrioEgal_Hoare : public OHoareMonitor, public AbstractReaderWriter
 {
-protected:
+/*protected:
     Condition attenteLecture;
     Condition attenteEcriture;
 
@@ -44,7 +44,8 @@ public:
         monitorIn();
         nbLecture --;
         if (nbLecture == 0)
-            signal(attenteLecture);
+            //signal(attenteLecture);
+            signal(attenteEcriture);
         monitorOut();
     }
 
@@ -52,7 +53,6 @@ public:
         monitorIn();
         if (nbLecture > 0 || nbEcriture > 0) {
             wait(attenteEcriture);
-            signal(attenteEcriture);
         }
         nbEcriture ++;
         monitorOut();
@@ -62,9 +62,81 @@ public:
         monitorIn();
         nbEcriture --;
         if (nbEcriture == 0)
-            signal(attenteEcriture);
+           // signal(attenteEcriture);
+            signal(attenteLecture);
+        monitorOut();
+    }*/
+
+
+
+
+protected:
+
+    Condition attenteRedaction;
+    Condition attenteLecture;
+
+    int nbLecteurs;
+    bool redactionEnCours;
+    int nbRedacteursEnAttente;
+
+    QString name;
+
+public:
+
+    QString getName(){
+        return name;
+    }
+
+    ReaderWriterPrioEgal_Hoare() :
+        nbLecteurs(0),
+        redactionEnCours(false),
+        nbRedacteursEnAttente(0),
+        name("Reader-Writer-PrioEgal_Hoare"){
+        attenteLecture.setName("attenteLecture");
+        attenteRedaction.setName("attenteRedaction");
+    }
+
+    void lockReading() {
+        monitorIn();
+        if (redactionEnCours) {
+            wait(attenteLecture);
+            signal(attenteLecture);
+        }
+        nbLecteurs ++;
         monitorOut();
     }
+
+    void unlockReading() {
+        monitorIn();
+        nbLecteurs --;
+        if (nbLecteurs == 0) {
+            signal(attenteRedaction);
+        }
+        monitorOut();
+    }
+
+    void lockWriting() {
+        monitorIn();
+        if ((nbLecteurs > 0) || (redactionEnCours)) {
+            nbRedacteursEnAttente ++;
+            wait(attenteRedaction);
+            nbRedacteursEnAttente --;
+        }
+        redactionEnCours = true;
+        monitorOut();
+    }
+
+    void unlockWriting() {
+        monitorIn();
+        redactionEnCours = false;
+        signal(attenteLecture);
+        monitorOut();
+    }
+
+
+
+
+
 };
 
 #endif // READERWRITERPRIOEGAL_HOARE_H
