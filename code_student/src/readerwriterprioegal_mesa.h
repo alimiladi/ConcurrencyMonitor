@@ -16,6 +16,10 @@ protected:
     int nbEcriture;
     QString name;
 
+    OWaitCondition fifo;
+    int libre;
+    int nbAttenteFifo;
+
 
 
 public:
@@ -29,21 +33,37 @@ public:
         nbAttenteLecture(0),
         nbAttenteEcriture(0),
         nbLecture(0),
-        nbEcriture(0), name("Reader-Writer-PrioEgal_Mesa")
+        nbEcriture(0),
+        name("Reader-Writer-PrioEgal_Mesa"),
+        libre(true),
+        nbAttenteFifo(0)
     {
         mutex.setName("mutex");
         attenteLecture.setName("attenteLecture");
         attenteEcriture.setName("attenteEcriture");
+        fifo.setName("fifo");
     }
 
     void lockReading() {
         mutex.lock();
+
+        while(!libre || nbAttenteFifo){
+            nbAttenteFifo++;
+            fifo.wait(&mutex);
+            nbAttenteFifo--;
+        }
+        libre = false;
+
         if (nbEcriture > 0) {
             nbAttenteLecture ++;
             attenteLecture.wait(&mutex);
         }
-        else
+        else{
             nbLecture ++;
+
+        }
+        libre = true;
+        fifo.wakeOne();
         mutex.unlock();
     }
 
@@ -60,12 +80,24 @@ public:
 
     void lockWriting() {
         mutex.lock();
+
+        while(!libre || nbAttenteFifo){
+            nbAttenteFifo++;
+            fifo.wait(&mutex);
+            nbAttenteFifo--;
+        }
+        libre = false;
+
         if (nbLecture > 0 || nbEcriture > 0) {
             nbAttenteEcriture ++;
             attenteEcriture.wait(&mutex);
         }
         nbAttenteEcriture--;
-        nbEcriture++;;
+        nbEcriture++;
+
+        libre = true;
+        fifo.wakeOne();
+
         mutex.unlock();
 
     }

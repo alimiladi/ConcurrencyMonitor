@@ -74,7 +74,9 @@ protected:
 
     Condition attenteRedaction;
     Condition attenteLecture;
+    Condition fifo;
 
+    bool libre;
     int nbLecteurs;
     bool redactionEnCours;
     int nbRedacteursEnAttente;
@@ -91,18 +93,30 @@ public:
         nbLecteurs(0),
         redactionEnCours(false),
         nbRedacteursEnAttente(0),
+        libre(true),
         name("Reader-Writer-PrioEgal_Hoare"){
         attenteLecture.setName("attenteLecture");
         attenteRedaction.setName("attenteRedaction");
+        fifo.setName("fifo");
     }
 
-    void lockReading() {
+    void lockReading() {             
         monitorIn();
+
+        if(!libre){
+            wait(fifo);
+        }
+        libre = false;
+
         if (redactionEnCours) {
             wait(attenteLecture);
             signal(attenteLecture);
         }
         nbLecteurs ++;
+
+        libre = true;
+        signal(fifo);
+
         monitorOut();
     }
 
@@ -110,26 +124,43 @@ public:
         monitorIn();
         nbLecteurs --;
         if (nbLecteurs == 0) {
+            //signal(attenteLecture);
             signal(attenteRedaction);
         }
+
+        libre = true;
+        signal(fifo);
+
         monitorOut();
     }
 
     void lockWriting() {
         monitorIn();
+
+        if(!libre){
+            wait(fifo);
+        }
+        libre = false;
+
         if ((nbLecteurs > 0) || (redactionEnCours)) {
             nbRedacteursEnAttente ++;
             wait(attenteRedaction);
             nbRedacteursEnAttente --;
         }
         redactionEnCours = true;
+
         monitorOut();
     }
 
     void unlockWriting() {
         monitorIn();
         redactionEnCours = false;
+        //signal(attenteRedaction);
         signal(attenteLecture);
+
+        libre = true;
+        signal(fifo);
+
         monitorOut();
     }
 

@@ -27,7 +27,7 @@ void TaskReader::run(){
     while(1) {
 
         synchroController->pause();
-        setFirstTime(false);
+        //setFirstTime(false);
         resource->lockReading();
         waitingLogger->addResourceAccess();
         synchroController->pause();
@@ -50,7 +50,7 @@ void TaskWriter::run(){
 
     while(1) {
         synchroController->pause();
-        setFirstTime(false);
+        //setFirstTime(false);
         resource->lockWriting();
         waitingLogger->addResourceAccess();
         synchroController->pause();

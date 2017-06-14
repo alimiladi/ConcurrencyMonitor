@@ -13,13 +13,11 @@
 
 //les 4 types (priorités) de ressources partagées avec Mesa
 #include "readerwriterpriowriter_mesa.h"
-//en test:
 #include "readerwriterprioegal_mesa.h"
 #include "readerwriterprioreaders_mesa.h"
 
 //les 4 types (priorités) de ressources partagées avec Hoare
 #include "readerwriterpriowriter_hoare.h"
-//en test:
 #include "readerwriterprioegal_hoare.h"
 
 #define NB_THREADS_READER 3
@@ -44,13 +42,11 @@ int main(int argc, char *argv[])
     //création de la ressource partagée avec Mesa
     //ReaderWriterPrioWriter_Mesa *resource = new ReaderWriterPrioWriter_Mesa();
     //en test(ne fonctionne pas encore bien):
-    //ReaderWriterPrioEgal_Mesa *resource = new ReaderWriterPrioEgal_Mesa();
-    //en test(a l'air de bien fonctionner)
-    ReaderWriterPrioReaders_Mesa *resource = new ReaderWriterPrioReaders_Mesa();
+    ReaderWriterPrioEgal_Mesa *resource = new ReaderWriterPrioEgal_Mesa();
+    //ReaderWriterPrioReaders_Mesa *resource = new ReaderWriterPrioReaders_Mesa();
 
     //création de la ressource partagée avec Hoare
     //ReaderWriterPrioWriter_Hoare *resource = new ReaderWriterPrioWriter_Hoare();
-    //en test(ne fonctionne pas encore bien):
     //ReaderWriterPrioEgal_Hoare *resource = new ReaderWriterPrioEgal_Hoare();
 
 
@@ -63,15 +59,17 @@ int main(int argc, char *argv[])
 
 
     std::cout << "-----------------------------------------------------------------------" << std::endl;
-    std::cout << "----------------SCENARIO: "<< qPrintable(resource->getName()) << "----------------" << std::endl;
-    std::cout << "-----------------------------------------------------------------------" << std::endl;
+    std::cout << "SCENARIO: "<< qPrintable(resource->getName()) << std::endl;
+    std::cout << "REDACTEURS: " << NB_THREADS_WRITER << std::endl;
+    std::cout << "LECTEURS: " << NB_THREADS_READER << std::endl;
+    std::cout << "-----------------------------------------------------------------------\n" << std::endl;
 
 
     //création des threads rédacteurs
     QList<TaskWriter*> *writersList = new QList<TaskWriter*>();
     for(int i = 0; i < NB_THREADS_WRITER; i++){
         writersList->append(new TaskWriter(logId, QString("redacteur%1").arg(i), resource));
-        writersList->at(i)->start();
+        //writersList->at(i)->start();
         logId++;
     }
 
@@ -79,22 +77,27 @@ int main(int argc, char *argv[])
     QList<TaskReader*> *readersList = new QList<TaskReader*>();
     for(int i = 0; i < NB_THREADS_READER; i++){
         readersList->append(new TaskReader(logId, QString("lecteur%1").arg(i), resource));
-        readersList->at(i)->start();
+        //readersList->at(i)->start();
         logId++;
     }
 
     bool continuing = true;
     char saisie;
     bool ko;
+    int lecteurId = 0;
+    int redacteurId = 0;
+    //seule solution trouvée pour obtenir
+    //un ordre d'affichage correct lors du premier tour
+    bool doubleAcquire = true;
     while (continuing) {
 
         //on attend la pause d'un thread
-        synchroController->getMainWaiting()->acquire();
+        //synchroController->getMainWaiting()->acquire();
 
         // Wait for a key press
         do {
 
-           std::cout << "Voulez-vous continuer? (y or n): ";
+           std::cout << "Voulez-vous continuer? (y ou n): ";
            std::cout.flush();
            std::cin >> saisie;
            ko = std::cin.fail() || (saisie != 'y' && saisie != 'n');
@@ -106,27 +109,67 @@ int main(int argc, char *argv[])
         } while (ko);
 
         // If key is <y>
-        if(saisie == 'y'){
+        if(saisie == 'y'){           
+
+            if(lecteurId < NB_THREADS_READER && redacteurId < NB_THREADS_WRITER){
+                // on donne le choix d'exécuter un lecteur ou un rédacteur
+                do {
+
+                   std::cout << "Lecteur ou redacteur? (l ou r): ";
+                   std::cout.flush();
+                   std::cin >> saisie;
+                   ko = std::cin.fail() || (saisie != 'l' && saisie != 'r');
+                   if (std::cin.fail()) {
+                      std::cin.clear();
+                      std::cout << "input error" << endl;
+                   }
+                   while(std::cin.get() != '\n'); // vide le buffer
+                } while (ko);
+
+                if(saisie == 'l'){
+                    std::cout << "On lance le lecteur" << lecteurId << "!" << std::endl;
+                    readersList->at(lecteurId)->start();
+                    lecteurId++;
+                }
+                else if(saisie == 'r'){
+                    std::cout << "On lance le redacteur" << redacteurId << "!" << std::endl;
+                    writersList->at(redacteurId)->start();
+                    redacteurId++;
+                }
+            }
+            //autrement s'il ne reste que des lecteurs à lancer
+            else if(lecteurId < NB_THREADS_READER){
+                std::cout << "On lance le lecteur" << lecteurId << "!" << std::endl;
+                readersList->at(lecteurId)->start();
+                lecteurId++;
+            }
+            //autrement s'il ne reste que des rédacteurs à lancer
+            else if(redacteurId < NB_THREADS_WRITER){
+                std::cout << "On lance le redacteur" << redacteurId << "!" << std::endl;
+                writersList->at(redacteurId)->start();
+                redacteurId++;
+            }
+
             SynchroController::getInstance()->resume();
         }
         // If key was <n>
         else if(saisie == 'n'){
             std::cout << "fin" << std::endl;
             continuing = false;
+            exit(0);
         }
+
+
+        if(doubleAcquire){
+            //on attend la pause d'un thread
+            synchroController->getMainWaiting()->acquire();
+            doubleAcquire =false;
+        }
+        //on attend la pause d'un thread
+        synchroController->getMainWaiting()->acquire();
+
     }
 
-
-
-    //terminaison des threads Reader
-    for(int i = 0; i < NB_THREADS_READER; i++){
-        readersList->at(i)->exit();
-    }
-
-    //terminaison des threads Writer
-    for(int i = 0; i < NB_THREADS_WRITER; i++){
-        writersList->at(i)->exit();
-    }
 
 
     return 0;
