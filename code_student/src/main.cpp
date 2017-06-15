@@ -34,15 +34,17 @@ int main(int argc, char *argv[])
     //on récupère le waitinglogger
     WaitingLogger* waitingLogger = WaitingLogger::getInstance();
 
+
+
     //création de la ressource partagée avec sémaphores
-    //ReaderWriterEqual_Sem *resource = new ReaderWriterEqual_Sem();
+    ReaderWriterEqual_Sem *resource = new ReaderWriterEqual_Sem();
     //ReaderWriterPrioReaders_Sem *resource = new ReaderWriterPrioReaders_Sem();
     //ReaderWriterPrioReading_Sem *resource = new ReaderWriterPrioReading_Sem();
     //ReaderWriterPrioWriter_Sem *resource = new ReaderWriterPrioWriter_Sem();
 
     //création de la ressource partagée avec Mesa
     //ReaderWriterPrioWriter_Mesa *resource = new ReaderWriterPrioWriter_Mesa();
-    ReaderWriterPrioEgal_Mesa *resource = new ReaderWriterPrioEgal_Mesa();
+    //ReaderWriterPrioEgal_Mesa *resource = new ReaderWriterPrioEgal_Mesa();
     //ReaderWriterPrioReaders_Mesa *resource = new ReaderWriterPrioReaders_Mesa();
     //ReaderWriterPrioReading_Mesa *resource = new ReaderWriterPrioReading_Mesa();
 
@@ -51,8 +53,6 @@ int main(int argc, char *argv[])
     //ReaderWriterPrioEgal_Hoare *resource = new ReaderWriterPrioEgal_Hoare();
 
 
-    //on set le tableau des logs
-    waitingLogger->setSizeLogs(NB_THREADS_READER+NB_THREADS_WRITER);
 
     //on prépare le compteur pour les identifiants unique de logs
     //entre tous les threads (lecteur et rédacteurs)
@@ -63,6 +63,7 @@ int main(int argc, char *argv[])
     std::cout << "SCENARIO: "<< qPrintable(resource->getName()) << std::endl;
     std::cout << "REDACTEURS: " << NB_THREADS_WRITER << std::endl;
     std::cout << "LECTEURS: " << NB_THREADS_READER << std::endl;
+    std::cout << "Pressez <enter> pour continuer ou <q> pour quitter" << std::endl;
     std::cout << "-----------------------------------------------------------------------\n" << std::endl;
 
 
@@ -70,49 +71,32 @@ int main(int argc, char *argv[])
     QList<TaskWriter*> *writersList = new QList<TaskWriter*>();
     for(int i = 0; i < NB_THREADS_WRITER; i++){
         writersList->append(new TaskWriter(logId, QString("redacteur%1").arg(i), resource));
-        //writersList->at(i)->start();
-        logId++;
     }
 
     //création des threads lecteurs
     QList<TaskReader*> *readersList = new QList<TaskReader*>();
     for(int i = 0; i < NB_THREADS_READER; i++){
         readersList->append(new TaskReader(logId, QString("lecteur%1").arg(i), resource));
-        //readersList->at(i)->start();
-        logId++;
     }
 
     bool continuing = true;
     char saisie;
     bool ko;
-    int lecteurId = 0;
-    int redacteurId = 0;
-    //seule solution trouvée pour obtenir
-    //un ordre d'affichage correct lors du premier tour
-    bool doubleAcquire = true;
+    int compteurLecteurId = 0;
+    int compteurRedacteurId = 0;
     while (continuing) {
 
-        //on attend la pause d'un thread
-        //synchroController->getMainWaiting()->acquire();
-
-        // Wait for a key press
-        do {
-
-           std::cout << "Voulez-vous continuer? (y ou n): ";
            std::cout.flush();
-           std::cin >> saisie;
-           ko = std::cin.fail() || (saisie != 'y' && saisie != 'n');
-           if (std::cin.fail()) {
-              std::cin.clear();
-              std::cout << "input error" << endl;
-           }
-           while(std::cin.get() != '\n'); // vide le buffer
-        } while (ko);
+           saisie = std::cin.get();
 
-        // If key is <y>
-        if(saisie == 'y'){           
+       if(saisie == 'q'){
+           std::cout << "fin" << std::endl;
+           continuing = false;
+           exit(0);
+       }
+       else{
 
-            if(lecteurId < NB_THREADS_READER && redacteurId < NB_THREADS_WRITER){
+            if(compteurLecteurId < NB_THREADS_READER && compteurRedacteurId < NB_THREADS_WRITER){
                 // on donne le choix d'exécuter un lecteur ou un rédacteur
                 do {
 
@@ -128,44 +112,32 @@ int main(int argc, char *argv[])
                 } while (ko);
 
                 if(saisie == 'l'){
-                    std::cout << "On lance le lecteur" << lecteurId << "!" << std::endl;
-                    readersList->at(lecteurId)->start();
-                    lecteurId++;
+                    std::cout << "On lance le lecteur" << compteurLecteurId << "!" << std::endl;
+                    readersList->at(compteurLecteurId)->start();
+                    compteurLecteurId++;
                 }
                 else if(saisie == 'r'){
-                    std::cout << "On lance le redacteur" << redacteurId << "!" << std::endl;
-                    writersList->at(redacteurId)->start();
-                    redacteurId++;
+                    std::cout << "On lance le redacteur" << compteurRedacteurId << "!" << std::endl;
+                    writersList->at(compteurRedacteurId)->start();
+                    compteurRedacteurId++;
                 }
             }
             //autrement s'il ne reste que des lecteurs à lancer
-            else if(lecteurId < NB_THREADS_READER){
-                std::cout << "On lance le lecteur" << lecteurId << "!" << std::endl;
-                readersList->at(lecteurId)->start();
-                lecteurId++;
+            else if(compteurLecteurId < NB_THREADS_READER){
+                std::cout << "On lance le lecteur" << compteurLecteurId << "!" << std::endl;
+                readersList->at(compteurLecteurId)->start();
+                compteurLecteurId++;
             }
             //autrement s'il ne reste que des rédacteurs à lancer
-            else if(redacteurId < NB_THREADS_WRITER){
-                std::cout << "On lance le redacteur" << redacteurId << "!" << std::endl;
-                writersList->at(redacteurId)->start();
-                redacteurId++;
+            else if(compteurRedacteurId < NB_THREADS_WRITER){
+                std::cout << "On lance le redacteur" << compteurRedacteurId << "!" << std::endl;
+                writersList->at(compteurRedacteurId)->start();
+                compteurRedacteurId++;
             }
 
             SynchroController::getInstance()->resume();
         }
-        // If key was <n>
-        else if(saisie == 'n'){
-            std::cout << "fin" << std::endl;
-            continuing = false;
-            exit(0);
-        }
 
-
-        if(doubleAcquire){
-            //on attend la pause d'un thread
-            synchroController->getMainWaiting()->acquire();
-            doubleAcquire =false;
-        }
         //on attend la pause d'un thread
         synchroController->getMainWaiting()->acquire();
 
@@ -174,13 +146,4 @@ int main(int argc, char *argv[])
 
 
     return 0;
-
-
-
-    // Pour ceux qui voudraient développer une version graphique
-    //    QApplication a(argc, argv);
-    //    MainWindow w;
-    //    w.show();
-
-    //    return a.exec();
 }

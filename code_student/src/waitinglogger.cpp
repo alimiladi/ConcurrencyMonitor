@@ -4,22 +4,24 @@
 #include "reader_writer_thread.h"
 
 void WaitingLogger::printLogs(){
-    unsigned int id = ((ReaderWriterThread*)ReaderWriterThread::currentThread())->getId();
+   /* unsigned int id = ((ReaderWriterThread*)ReaderWriterThread::currentThread())->getId();
     QString name = ((ReaderWriterThread*)ReaderWriterThread::currentThread())->objectName();
     std::cout << "\n*******************logs de " << qPrintable(name) << "****************\n";
     std::cout << qPrintable(*(this->logs->at(id)));
     std::cout << "***************************************************\n" << std::endl;
     //on efface les logs pour le thread courant
     logs->at(id)->clear();
+    */
 
 }
 
 
 void WaitingLogger::setSizeLogs(unsigned int nbThreads){
 
-    for(int i = 0; i < nbThreads; i++){
+    /*for(int i = 0; i < nbThreads; i++){
         logs->append(new QString(""));
     }
+    */
 }
 
 
@@ -121,31 +123,36 @@ void ReadWriteLogger::updateView()
 {
 
     unsigned int id = ((ReaderWriterThread*)ReaderWriterThread::currentThread())->getId();
-    //QString name = ((ReaderWriterThread*)ReaderWriterThread::currentThread())->objectName();
+    QString name = ((ReaderWriterThread*)ReaderWriterThread::currentThread())->objectName();
 
-    //avant que le thread écrive ses logs,
-    //il doit effacer les précédents car on sait qu'ils ont déjà été affichés.
-    //logs->at(id)->clear();
-
-    logs->at(id)->append("------------------------------------------------------\n");
+    logs.append("------------------------------------------------------\n");
     for(int i = 0; i< queues.size(); i ++){
-        logs->at(id)->append(queues.at(i)->getName()).append(" <- ");
+        logs.append(queues.at(i)->getName()).append(" <- ");
         for(int j =0 ; j< queues.at(i)->getThreadNames().size() ; j ++){
-            logs->at(id)->append(queues.at(i)->getThreadNames().at(j));
+            logs.append(queues.at(i)->getThreadNames().at(j));
             if(j!=queues.at(i)->getThreadNames().size()-1){
-                logs->at(id)->append(" - ");
+                logs.append(" - ");
             }
         }
-        logs->at(id)->append("\n");
+        logs.append("\n");
     }
-    logs->at(id)->append("In ressource : ");
+    logs.append("In ressource : ");
     for(int k = 0;k <resourceAccesses.size(); k++){
-        logs->at(id)->append(resourceAccesses.at(k));
+        logs.append(resourceAccesses.at(k));
         if(k != resourceAccesses.size()-1){
-            logs->at(id)->append(", ");
+            logs.append(", ");
         }
     }
-    logs->at(id)->append("\n------------------------------------------------------\n");
+    logs.append("\n------------------------------------------------------\n");
+
+
+
+    std::cout << "\n*******************logs de " << qPrintable(name) << "****************\n";
+    std::cout << qPrintable(logs);
+    std::cout << "***************************************************\n" << std::endl;
+
+    //on efface les logs pour le thread courant
+    logs.clear();
 }
 
 

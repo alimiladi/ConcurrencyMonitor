@@ -32,7 +32,7 @@ void SynchroController::pause()
        // std::cout << "Le " << qPrintable(QThread::currentThread()->objectName()) << " va demander pour la premire fois l acces a la ressource." << std::endl;
     //}else{
         //on affiche les logs qui ont été fait depuis la dernière pause
-        WaitingLogger::getInstance()->printLogs();
+        //WaitingLogger::getInstance()->printLogs();
     //}
 
     //on redonne la main au main thread pour demander à l'utilisateur la suite
