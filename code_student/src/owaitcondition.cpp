@@ -4,8 +4,6 @@ OWaitCondition::OWaitCondition() : cond(), mutex(QMutex::NonRecursive){}
 
 void OWaitCondition::setName(QString name){this->name = name;}
 
-void OWaitCondition::setThreadName(QString thread_name){this->thread_name = thread_name;}
-
 bool OWaitCondition::wait(OMutex *lockedMutex){
     mutex.lock(); // mutex sur lequel la QWaitCondition va bloquer
     lockedMutex->unlock(); // dévérouillage du lockedMutex bloqué dans le moniteur

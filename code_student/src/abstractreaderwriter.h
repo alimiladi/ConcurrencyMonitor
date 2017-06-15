@@ -7,6 +7,12 @@
  *  @author Yann Thoma
  *  @date 08.05.2017
  *  @bug No known bug
+ *
+ *
+ * Ce fichier a été repris pour faire le labo ainsi nous gardons la
+ * même structure que celle vue en cours.
+ * Il s'agit de représenter une ressource de manière générale
+ * concernant un modèle lecteurs-rédacteurs en PCO.
  */
 
 #ifndef ABSTRACTREADERWRITER_H

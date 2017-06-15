@@ -47,7 +47,7 @@ public:
     void lockReading() {
         mutex.lock();
 
-        while(!libre || nbAttenteFifo){
+        if(!libre || nbAttenteFifo){
             nbAttenteFifo++;
             fifo.wait(&mutex);
             nbAttenteFifo--;
@@ -81,7 +81,7 @@ public:
     void lockWriting() {
         mutex.lock();
 
-        while(!libre || nbAttenteFifo){
+        if(!libre || nbAttenteFifo){
             nbAttenteFifo++;
             fifo.wait(&mutex);
             nbAttenteFifo--;

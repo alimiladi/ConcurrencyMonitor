@@ -1,3 +1,13 @@
+/** @file hoarmonitor.h
+ *  @brief hoare moniteur
+ *
+ * Cette classe a été reprise du cours de PCO.
+ * Elle représente un moniteur de Hoare.
+ * Les commentaire originaux on été conservé en anglais et rien
+ * n'a été modifié.
+ */
+
+
 #ifndef HOAREMONITOR_H
 #define HOAREMONITOR_H
 

@@ -1,3 +1,16 @@
+/** @file osemaphore.h
+ *  @brief wrapper du QSemaphore pour fournir un service de logs
+ *
+ *  @author Ali Miladi, Quentin Zeller, Julien Brêchet et Adrien Marco
+ *  @date 15.06.2017
+ *  @bug pas de bugs connus
+ *
+ * Cette classe se base sur les caractéristiques du QSemaphore.
+ * Le but ici est de pouvoir fournir un service de logs sur
+ * une sémaphore lorsque les threads lecteurs ou rédacteurs voudront
+ * accéder à une ressource.
+ */
+
 #ifndef PSEMAPHORE_H
 #define PSEMAPHORE_H
 
@@ -5,24 +18,42 @@
 #include "waitinglogger.h"
 #include "QMutex"
 
-/**
- * @brief The OSemaphore class
- * Sémaphore adapté aux besoins de l'appli, hérite de ReadWriteLogger pour pouvoir faire
- * des logs s'il y'a des threads qui bloquent dessus.
- *
- */
+
 class OSemaphore
 {
 public:
-    //! Constructeur pareil à celui de QSemaphore
+
+    /**
+     * @brief OSemaphore
+     * @param n: valeur de la sémaphore
+     * constructeur de la classe
+     */
     OSemaphore(int n);
 
+    /**
+     * @brief acquire
+     * fournit un service de logs par dessu la méthode acquire de QSemaphore
+     */
     void acquire();
 
+    /**
+     * @brief release
+     * fournit un service de logs par dessu la méthode release de QSemaphore
+     */
     void release();
 
+    /**
+     * @brief tryAcquire
+     * @return vrai si peut acquérir la sémaphore et faux sinon
+     * même implémentation que le tryAcquire() de QSemaphore
+     */
     bool tryAcquire();
 
+    /**
+     * @brief setName
+     * @param name: nom de la sémaphore
+     * sert à setter un nom pour la sémaphore
+     */
     void setName(QString name);
 
 

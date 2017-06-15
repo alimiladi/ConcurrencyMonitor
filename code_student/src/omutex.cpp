@@ -9,9 +9,7 @@ void OMutex::setName(QString name){
     this->name = name;
 }
 
-void OMutex::setThreadName(QString thread_name){
-    this->thread_name = thread_name;
-}
+
 
 void OMutex::lock(){
     mutex.lock(); // Protection par un mutex
