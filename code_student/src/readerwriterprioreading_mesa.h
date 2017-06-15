@@ -9,11 +9,12 @@ class ReaderWriterPrioReading_Mesa :
         public AbstractReaderWriter {
 protected:
     OWaitCondition attenteLecteurs;
-    OWaitCondition attenteRedacteurs;
+    OWaitCondition attenteTour;
     OMutex mutex;
     int nbLecteurs;
     bool redacteur;
-    int nbRedacteursAttente;
+    bool lecteurDansFifo;
+    //int nbRedacteursAttente;
     QString name;
 
 public:
@@ -25,19 +26,26 @@ public:
     ReaderWriterPrioReading_Mesa() :
         nbLecteurs(0),
         redacteur(false),
-        nbRedacteursAttente(0),
+        /*nbRedacteursAttente(0),*/
+        lecteurDansFifo(false),
         name("ReaderWriterPrioReading_Mesa")
     {
         attenteLecteurs.setName("attenteLecteurs");
-        attenteRedacteurs.setName("attenteRedacteurs");
+        attenteTour.setName("attenteTour");
         mutex.setName("mutex");
     }
 
     void lockReading() {
       mutex.lock();
-      if(redacteur){
+      while(lecteurDansFifo){
           attenteLecteurs.wait(&mutex);
       }
+      if(redacteur){
+          lecteurDansFifo = true;
+          attenteTour.wait(&mutex);
+          lecteurDansFifo = false;
+      }
+      attenteLecteurs.wakeOne();
       nbLecteurs++;
       mutex.unlock();
     }
@@ -46,7 +54,7 @@ public:
       mutex.lock();
       nbLecteurs--;
       if (nbLecteurs==0) {
-        attenteRedacteurs.wakeOne();
+        attenteTour.wakeOne();
       }
       else{
           attenteLecteurs.wakeOne();
@@ -57,9 +65,9 @@ public:
     void lockWriting() {
         mutex.lock();
         if (nbLecteurs > 0 || redacteur) {
-            nbRedacteursAttente++;
-            attenteRedacteurs.wait(&mutex);
-            nbRedacteursAttente--;
+            //nbRedacteursAttente++;
+            attenteTour.wait(&mutex);
+            //nbRedacteursAttente--;
         }
         redacteur = true;
         mutex.unlock();
@@ -68,6 +76,7 @@ public:
     void unlockWriting() {
       mutex.lock();
       redacteur = false;
+      attenteTour.wakeOne();
       mutex.unlock();
     }
 };

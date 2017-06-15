@@ -37,13 +37,14 @@ int main(int argc, char *argv[])
 
 
     //création de la ressource partagée avec sémaphores
-    ReaderWriterEqual_Sem *resource = new ReaderWriterEqual_Sem();
+    //ReaderWriterEqual_Sem *resource = new ReaderWriterEqual_Sem();
     //ReaderWriterPrioReaders_Sem *resource = new ReaderWriterPrioReaders_Sem();
     //ReaderWriterPrioReading_Sem *resource = new ReaderWriterPrioReading_Sem();
     //ReaderWriterPrioWriter_Sem *resource = new ReaderWriterPrioWriter_Sem();
 
     //création de la ressource partagée avec Mesa
     //ReaderWriterPrioWriter_Mesa *resource = new ReaderWriterPrioWriter_Mesa();
+    //fonctionne pas:
     //ReaderWriterPrioEgal_Mesa *resource = new ReaderWriterPrioEgal_Mesa();
     //ReaderWriterPrioReaders_Mesa *resource = new ReaderWriterPrioReaders_Mesa();
     //ReaderWriterPrioReading_Mesa *resource = new ReaderWriterPrioReading_Mesa();
@@ -86,8 +87,9 @@ int main(int argc, char *argv[])
     int compteurRedacteurId = 0;
     while (continuing) {
 
-           std::cout.flush();
-           saisie = std::cin.get();
+       std::cout << "\n#######################################################################" << std::endl;
+       std::cout.flush();
+       saisie = std::cin.get();
 
        if(saisie == 'q'){
            std::cout << "fin" << std::endl;

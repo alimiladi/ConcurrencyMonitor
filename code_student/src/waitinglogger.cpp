@@ -125,7 +125,7 @@ void ReadWriteLogger::updateView()
     unsigned int id = ((ReaderWriterThread*)ReaderWriterThread::currentThread())->getId();
     QString name = ((ReaderWriterThread*)ReaderWriterThread::currentThread())->objectName();
 
-    logs.append("------------------------------------------------------\n");
+    //logs.append("------------------------------------------------------\n");
     for(int i = 0; i< queues.size(); i ++){
         logs.append(queues.at(i)->getName()).append(" <- ");
         for(int j =0 ; j< queues.at(i)->getThreadNames().size() ; j ++){
@@ -143,13 +143,13 @@ void ReadWriteLogger::updateView()
             logs.append(", ");
         }
     }
-    logs.append("\n------------------------------------------------------\n");
+    //logs.append("\n------------------------------------------------------\n");
 
 
 
     std::cout << "\n*******************logs de " << qPrintable(name) << "****************\n";
     std::cout << qPrintable(logs);
-    std::cout << "***************************************************\n" << std::endl;
+    std::cout << "\n***************************************************\n" << std::endl;
 
     //on efface les logs pour le thread courant
     logs.clear();
