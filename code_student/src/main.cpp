@@ -15,6 +15,7 @@
 #include "readerwriterpriowriter_mesa.h"
 #include "readerwriterprioegal_mesa.h"
 #include "readerwriterprioreaders_mesa.h"
+#include "readerwriterprioreading_mesa.h"
 
 //les 4 types (priorités) de ressources partagées avec Hoare
 #include "readerwriterpriowriter_hoare.h"
@@ -41,9 +42,9 @@ int main(int argc, char *argv[])
 
     //création de la ressource partagée avec Mesa
     //ReaderWriterPrioWriter_Mesa *resource = new ReaderWriterPrioWriter_Mesa();
-    //en test(ne fonctionne pas encore bien):
-    ReaderWriterPrioEgal_Mesa *resource = new ReaderWriterPrioEgal_Mesa();
+    //ReaderWriterPrioEgal_Mesa *resource = new ReaderWriterPrioEgal_Mesa();
     //ReaderWriterPrioReaders_Mesa *resource = new ReaderWriterPrioReaders_Mesa();
+    ReaderWriterPrioReading_Mesa *resource = new ReaderWriterPrioReading_Mesa();
 
     //création de la ressource partagée avec Hoare
     //ReaderWriterPrioWriter_Hoare *resource = new ReaderWriterPrioWriter_Hoare();
