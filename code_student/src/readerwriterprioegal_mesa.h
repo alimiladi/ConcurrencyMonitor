@@ -26,17 +26,20 @@ class ReaderWriterPrioEgal_Mesa : public AbstractReaderWriter{
 
 protected:
 
+    //protège l'accès aux variables paratgées
     OMutex mutex;
-    OWaitCondition attenteLecture;
-    int nbAttenteLecture;
+    //file d'attente pour les rédacteurs après avoir passé le fifo
     OWaitCondition attenteEcriture;
-    int nbAttenteEcriture;
+    //nb lecteurs dans la ressource
     int nbLecture;
+    //rédacteur dans la ressource
     bool ecriture;
+    //nom de la ressource
     QString name;
+    //file d'attente principale
     OWaitCondition fifo;
+    //pour libérer un thread dans le fifo
     int libre;
-    int nbAttenteFifo;
 
 
 
@@ -56,16 +59,12 @@ public:
      * constructeur de la ressource
      */
     ReaderWriterPrioEgal_Mesa() :
-        nbAttenteLecture(0),
-        nbAttenteEcriture(0),
         nbLecture(0),
         ecriture(false),
         name("Reader-Writer-PrioEgal_Mesa"),
-        libre(true),
-        nbAttenteFifo(0)
+        libre(true)
     {
         mutex.setName("mutex");
-        attenteLecture.setName("attenteLecture");
         attenteEcriture.setName("attenteEcriture");
         fifo.setName("fifo");
     }
@@ -78,14 +77,20 @@ public:
     void lockReading() {
         mutex.lock();
 
+        //on attend dans le fifo temps que c'est pas le tour du prochain thread
         while(!libre){
             fifo.wait(&mutex);
-
         }
+        //les suivants devront attendre dans le fifo
         libre = false;
 
+        //lecteur dans la ressource
         nbLecture++;
 
+        //on peut sortir un autre thread de la ressource
+        //s'il s'agit d'un lecteur, alors il passera tout droit dans la ressource
+        //sinon, s'il s'agit d'un rédacteur alors il attendra dans une seconde file
+        //pour rédacteurs
         libre = true;
         fifo.wakeOne();
 
@@ -99,8 +104,11 @@ public:
      */
     void unlockReading() {
         mutex.lock();
+        //on sort de la ressource
         nbLecture --;
+        //si c'est le dernier lecteur à sortir
         if(nbLecture == 0){
+            //on réveille un rédacteurs qui était déjà sorti du fifo
             attenteEcriture.wakeOne();
         }
         mutex.unlock();
@@ -113,15 +121,20 @@ public:
     void lockWriting() {
         mutex.lock();
 
+        //on attend dans le fifo temps que c'est pas le tour du prochain thread
         while(!libre){
             fifo.wait(&mutex);
         }
+        //les suivants devront attendre dans le fifo
         libre = false;
 
+        //s'il y a des lecteurs dans la ressource alors on attend
+        //sur une deuxième file dediée aux rédacteurs
         if(nbLecture > 0){
             attenteEcriture.wait(&mutex);
         }
 
+        //le rédacteur est dans la ressource
         ecriture = true;
 
         mutex.unlock();
@@ -135,9 +148,14 @@ public:
      */
     void unlockWriting() {
         mutex.lock();
+
+        //le rédacteur quitte la ressource
         ecriture = false;
+
+        //on donne le tour au prochain thread dans le fifo
         libre = true;
         fifo.wakeOne();
+
         mutex.unlock();
     }
 };

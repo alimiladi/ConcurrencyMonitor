@@ -69,15 +69,14 @@ int main(int argc, char *argv[])
 
     //création de la ressource partagée avec Mesa
     //ReaderWriterPrioWriter_Mesa *resource = new ReaderWriterPrioWriter_Mesa();
-    //pas assez de files d'attente:
-    ReaderWriterPrioEgal_Mesa *resource = new ReaderWriterPrioEgal_Mesa();
+    //ReaderWriterPrioEgal_Mesa *resource = new ReaderWriterPrioEgal_Mesa();
     //ReaderWriterPrioReaders_Mesa *resource = new ReaderWriterPrioReaders_Mesa();
     //ReaderWriterPrioReading_Mesa *resource = new ReaderWriterPrioReading_Mesa();
 
     //création de la ressource partagée avec Hoare
     //ReaderWriterPrioWriter_Hoare *resource = new ReaderWriterPrioWriter_Hoare();
     //trop de files d'attente:
-    //ReaderWriterPrioEgal_Hoare *resource = new ReaderWriterPrioEgal_Hoare();
+    ReaderWriterPrioEgal_Hoare *resource = new ReaderWriterPrioEgal_Hoare();
     //fonctionne pas
     //ReaderWriterPrioReading_Hoare *resource = new ReaderWriterPrioReading_Hoare();
 
