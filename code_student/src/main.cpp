@@ -1,3 +1,21 @@
+/** @file main.cpp
+ *  @brief programme principal
+ *
+ *  @author Ali Miladi, Quentin Zeller, Julien Brêchet et Adrien Marco
+ *  @date 15.06.2017
+ *  @bug pas de bugs connus
+ *
+ * Ce programme génère un scénario de différents threads de type
+ * lecteurs ou rédacteurs qui veulent accéder à une ressource partagée.
+ * Le programme offre un service de logs qui décrivent l'état de la
+ * ressource pour chaque étape. Les étapes sont marquées par des pauses.
+ * Une saisie utilisateur va permettre de relancer les threads
+ * (lecteurs/rédacteurs) et de mettre en pause le programme principal jusqu'à
+ * l'affichage des prochain logs et la mise en pause du thread en exécution.
+ * Ce programme regroupe donc différents objets tels que la ressource
+ * (plusieurs types sont à disposition), le synchro contrôleur (gestion des pauses
+ * et départs), le contrôleur de logs et les threads lecteurs/rédacteurs.
+ */
 
 #include <QApplication>
 #include "synchrocontroller.h"
@@ -84,27 +102,36 @@ int main(int argc, char *argv[])
         readersList->append(new TaskReader(logId, QString("lecteur%1").arg(i), resource));
     }
 
+    //variables pour la saisie et le lancement des threads
     bool continuing = true;
     char saisie;
-    bool ko;
+    bool ko; //si mauvaise saisie
     int compteurLecteurId = 0;
     int compteurRedacteurId = 0;
+
+    //tant que l'utilisateur veut continuer
     while (continuing) {
 
+        //vide le flux
        std::cout.flush();
+
+       //récupère saisie
        saisie = std::cin.get();
 
+       //si l'utilisateur veut terminer le programme, on le termine
        if(saisie == 'q'){
            std::cout << "fin" << std::endl;
            continuing = false;
            exit(0);
        }
+       //autrement on le poursuit
        else{
 
+           //s'il reste des lecteurs et rédacteurs à lancer alors on laisse le choix à l'utilisateur
             if(compteurLecteurId < NB_THREADS_READER && compteurRedacteurId < NB_THREADS_WRITER){
-                // on donne le choix d'exécuter un lecteur ou un rédacteur
-                do {
 
+                //saisie utilisateur
+                do {
                    std::cout << "Lecteur ou redacteur? (l ou r): ";
                    std::cout.flush();
                    std::cin >> saisie;
@@ -116,39 +143,40 @@ int main(int argc, char *argv[])
                    while(std::cin.get() != '\n'); // vide le buffer
                 } while (ko);
 
+                //si on lecteur est choisit, on le lance
                 if(saisie == 'l'){
                     std::cout << "On lance le lecteur" << compteurLecteurId << "!" << std::endl;
                     readersList->at(compteurLecteurId)->start();
                     compteurLecteurId++;
                 }
+                //autrement si on rédacteur est choisit, on le lance
                 else if(saisie == 'r'){
                     std::cout << "On lance le redacteur" << compteurRedacteurId << "!" << std::endl;
                     writersList->at(compteurRedacteurId)->start();
                     compteurRedacteurId++;
                 }
             }
-            //autrement s'il ne reste que des lecteurs à lancer
+            //autrement s'il ne reste que des lecteurs à lancer, on lance automatiquement un lecteur
             else if(compteurLecteurId < NB_THREADS_READER){
                 std::cout << "On lance le lecteur" << compteurLecteurId << "!" << std::endl;
                 readersList->at(compteurLecteurId)->start();
                 compteurLecteurId++;
             }
-            //autrement s'il ne reste que des rédacteurs à lancer
+            //autrement s'il ne reste que des rédacteurs à lancer, on lance automatiquement un rédacteur
             else if(compteurRedacteurId < NB_THREADS_WRITER){
                 std::cout << "On lance le redacteur" << compteurRedacteurId << "!" << std::endl;
                 writersList->at(compteurRedacteurId)->start();
                 compteurRedacteurId++;
             }
 
-            SynchroController::getInstance()->resume();
+            //on libère un thread lecteur ou rédacteur
+            synchroController->resume();
         }
 
-        //on attend la pause d'un thread
+        //on attend la pause d'un thread lecteur ou rédacteur
         synchroController->getMainWaiting()->acquire();
 
     }
-
-
 
     return 0;
 }
