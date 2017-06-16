@@ -1,3 +1,4 @@
+
 #ifndef WAITINGLOGGER_H
 #define WAITINGLOGGER_H
 
