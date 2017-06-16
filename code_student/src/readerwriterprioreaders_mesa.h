@@ -6,7 +6,7 @@
  *  @bug No known bug
  *
  * Cette classe représente une ressource que des lecteurs et rédacteurs
- * vondront accéder. Pour y accéder ou en sortir, les threads devront
+ * voudront accéder. Pour y accéder ou en sortir, les threads devront
  * appeler une des méthodes ci-dessous.
  * La ressource hérite pour cela d'une ressource abstraite
  * Le but ici est de gérer une prorité des lecteurs.
@@ -70,15 +70,15 @@ public:
      */
     void lockReading() {
         mutex.lock();
-        //Attente sur la condition seuelement si un lecteur est déja dans la ressource
+        //Attente sur la condition seulement si un rédacteur est déja dans la ressource
         if (redactionEnCours) {
             nbLecteursEnAttente ++;
             attenteLecture.wait(&mutex);
+            nbLecteursEnAttente --;
         }
         //Incrémentation du nombre de lecteurs de toute façon car soit pas de rédaction en cours
         // soit réception d'un wakeOne ==> déblocage du wait
         nbLecteurs ++;
-
         mutex.unlock();
     }
 
@@ -90,12 +90,12 @@ public:
         mutex.lock();
         nbLecteurs --;
         //Réveil d'un rédacteur seulement si c'est le dernier des lecteurs
-        if (nbLecteurs == 0 && !nbLecteursEnAttente) {
+        if (!nbLecteurs && nbRedacteursEnAttente) {
             attenteEcriture.wakeOne();
         }
-        else
-            //Si encore des lecteurs en attente lors de la sortie de la resource, en libérer un
-            attenteLecture.wakeOne();
+//        else
+//            //Si encore des lecteurs en attente lors de la sortie de la resource, en libérer un
+//            attenteLecture.wakeOne();
         mutex.unlock();
     }
 
@@ -111,9 +111,9 @@ public:
         if ( nbLecteurs || nbLecteursEnAttente || redactionEnCours ) {            
             nbRedacteursEnAttente ++;
             attenteEcriture.wait(&mutex);
+            nbRedacteursEnAttente --;
         }
-        else
-            redactionEnCours = true;
+        redactionEnCours = true;
         mutex.unlock();
     }
 
@@ -127,15 +127,11 @@ public:
         redactionEnCours = false;
         //Libération d'un lecteur si au moins un en attente
         if (nbLecteursEnAttente) {
-            nbLecteursEnAttente --;
-            nbLecteurs++;
             attenteLecture.wakeOne();
             mutex.unlock();
         }
         //Si pas de lecteurs en attente mais rédacteurs en attente, en libérer un
         else if (nbRedacteursEnAttente) {
-            nbRedacteursEnAttente --;
-            redactionEnCours = true;
             attenteEcriture.wakeOne();
             mutex.unlock();
         }
