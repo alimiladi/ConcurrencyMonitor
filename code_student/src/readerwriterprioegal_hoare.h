@@ -6,69 +6,6 @@
 
 class ReaderWriterPrioEgal_Hoare : public OHoareMonitor, public AbstractReaderWriter
 {
-/*protected:
-    Condition attenteLecture;
-    Condition attenteEcriture;
-
-    int nbLecture;
-    int nbEcriture;
-
-    QString name;
-
-public:
-
-    QString getName(){
-        return name;
-    }
-
-    ReaderWriterPrioEgal_Hoare() :
-        nbLecture(0),
-        nbEcriture(0),
-        name("Reader-Writer-PrioEgal_Hoare")
-    {
-        attenteLecture.setName("attenteLecture");
-        attenteEcriture.setName("attenteEcriture");
-    }
-
-    void lockReading() {
-        monitorIn();
-        if (nbEcriture > 0) {
-            wait(attenteLecture);
-            signal(attenteLecture);
-        }
-        nbLecture ++;
-        monitorOut();
-    }
-
-    void unlockReading() {
-        monitorIn();
-        nbLecture --;
-        if (nbLecture == 0)
-            //signal(attenteLecture);
-            signal(attenteEcriture);
-        monitorOut();
-    }
-
-    void lockWriting() {
-        monitorIn();
-        if (nbLecture > 0 || nbEcriture > 0) {
-            wait(attenteEcriture);
-        }
-        nbEcriture ++;
-        monitorOut();
-    }
-
-    void unlockWriting() {
-        monitorIn();
-        nbEcriture --;
-        if (nbEcriture == 0)
-           // signal(attenteEcriture);
-            signal(attenteLecture);
-        monitorOut();
-    }*/
-
-
-
 
 protected:
 

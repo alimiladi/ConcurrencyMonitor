@@ -5,9 +5,16 @@
  *  for readers only when a reading is currently under way.
  *
  *
- *  @author Yann Thoma
- *  @date 08.05.2017
+ *  @author Yann Thoma : modifié par Ali Miladi, Quentin Zeller,
+ *  Julien Brêchet et Adrien Marco
+ *  @date 15.06.2017
  *  @bug No known bug
+ *
+ * Cette classe est reprise du professeur. Pour cela nous n'ajouterons pas plus
+ * de commentaire ou modifications si ce n'est le passage de QSemaphore à
+ * OSemaphore, permettant ainsi la journalisation de logs sur les différentes files.
+ * Nous avons, par conséquent, aussi du nommer ces différentes files
+ * ainsi que cette ressource.
  */
 
 #ifndef READERWRITERPRIOREADINGSEM_H

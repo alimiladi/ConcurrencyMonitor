@@ -46,12 +46,18 @@ public:
 
     void lockReading() {
         mutex.lock();
-        if(ecriture){
+
+        while(!libre){
             fifo.wait(&mutex);
         }
-        if(ecriture){
-            attenteLecture.wait()
-        }
+        libre = false;
+
+        /*if(ecriture){
+            attenteLecture.wait(&mutex);
+        }*/
+
+        nbLecture++;
+
 
         mutex.unlock();
     }
@@ -59,9 +65,9 @@ public:
     void unlockReading() {
         mutex.lock();
         nbLecture --;
-        if (nbLecture == 0) {
-            attenteEcriture.wakeOne();
-        }
+        libre = true;
+        fifo.wakeOne();
+        //attenteLecture.wakeOne();
         mutex.unlock();
     }
 
@@ -73,15 +79,11 @@ public:
         }
         libre = false;
 
-        if (nbLecture > 0 || ecriture) {
-            nbAttenteEcriture ++;
+        /*if (nbLecture > 0 || ecriture) {
             attenteEcriture.wait(&mutex);
-        }
-        nbAttenteEcriture--;
-        ecriture = true;
+        }*/
 
-        libre = true;
-        fifo.wakeOne();
+        ecriture = true;
 
         mutex.unlock();
 
@@ -89,12 +91,10 @@ public:
 
     void unlockWriting() {
         mutex.lock();
-        ecriture = false
-        if () {
-            attenteLecture.wakeAll();
-            nbLecture = nbAttenteLecture;
-            nbAttenteLecture = 0;
-        }
+        ecriture = false;
+        libre = true;
+        fifo.wakeOne();
+        //attenteEcriture.wakeOne();
         mutex.unlock();
     }
 };

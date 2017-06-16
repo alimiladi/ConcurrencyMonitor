@@ -18,7 +18,6 @@ TaskReader::TaskReader(const unsigned int &id, const QString &name, AbstractRead
     this->resource = resource;
 }
 
-TaskReader::TaskReader(){}
 
 
 void TaskReader::run(){
@@ -44,7 +43,6 @@ TaskWriter::TaskWriter(const unsigned int &id, const QString &name, AbstractRead
     this->resource = resource;
 }
 
-TaskWriter::TaskWriter(){}
 
 void TaskWriter::run(){
 
