@@ -78,7 +78,7 @@ public:
         mutex.lock();
 
         //on attend dans le fifo temps que c'est pas le tour du prochain thread
-        while(!libre){
+        if(!libre){
             fifo.wait(&mutex);
         }
         //les suivants devront attendre dans le fifo
@@ -122,7 +122,7 @@ public:
         mutex.lock();
 
         //on attend dans le fifo temps que c'est pas le tour du prochain thread
-        while(!libre){
+        if(!libre){
             fifo.wait(&mutex);
         }
         //les suivants devront attendre dans le fifo

@@ -25,14 +25,17 @@ class ReaderWriterPrioEgal_Hoare : public OHoareMonitor, public AbstractReaderWr
 
 protected:
 
-    Condition attenteRedaction; //file attente pour les rédacteurs
-    Condition attenteLecture; //file attente pour les lecteurs
-    Condition fifo; //file attente pour attendre sur les autres files
-
+    //file d'attente pour les rédacteurs après avoir passé le fifo
+    Condition attenteRedaction;
+    //file d'attente principale, pour ne pas bruler la priorité
+    Condition fifo;
+    //pour libérer un thread dans le fifo
     bool libre;
+    //nb lecteurs dans la ressource
     int nbLecteurs;
+    //rédacteur dans la ressource
     bool redactionEnCours;
-    int nbRedacteursEnAttente;
+    //nom de la ressource
     QString name;
 
 public:
@@ -53,10 +56,8 @@ public:
     ReaderWriterPrioEgal_Hoare() :
         nbLecteurs(0),
         redactionEnCours(false),
-        nbRedacteursEnAttente(0),
         libre(true),
         name("Reader-Writer-PrioEgal_Hoare"){
-        attenteLecture.setName("attenteLecture");
         attenteRedaction.setName("attenteRedaction");
         fifo.setName("fifo");
     }
@@ -69,19 +70,20 @@ public:
 
         monitorIn();
 
-        //pour ne pas bruler la priorité
+        //on attend dans le fifo temps que c'est pas le tour du prochain thread
         if(!libre){
             wait(fifo);
         }
+        //les suivants devront attendre dans le fifo
         libre = false;
 
-        //si la lecture n'est pas possible, on attend
-        if (redactionEnCours) {
-            wait(attenteLecture);
-            signal(attenteLecture);
-        }
+        //lecteur dans la ressource
         nbLecteurs ++;
 
+        //on peut sortir un autre thread de la ressource
+        //s'il s'agit d'un lecteur, alors il passera tout droit dans la ressource
+        //sinon, s'il s'agit d'un rédacteur alors il attendra dans une seconde file
+        //pour rédacteurs
         libre = true;
         signal(fifo);
 
@@ -96,15 +98,14 @@ public:
 
         monitorIn();
 
+        //on sort de la ressource
         nbLecteurs --;
 
-        //le dernier lecteur signale passe la main aux rédacteurs
+        //si c'est le dernier lecteur à sortir
         if (nbLecteurs == 0) {
+            //on réveille un rédacteurs qui était déjà sorti du fifo
             signal(attenteRedaction);
         }
-
-        libre = true;
-        signal(fifo);
 
         monitorOut();
     }
@@ -117,18 +118,20 @@ public:
 
         monitorIn();
 
-        //pour ne pas bruler la priorité
+        //on attend dans le fifo temps que c'est pas le tour du prochain thread
         if(!libre){
             wait(fifo);
         }
+        //les suivants devront attendre dans le fifo
         libre = false;
 
-        //si l'écriture n'est pas possible, on attend
-        if ((nbLecteurs > 0) || (redactionEnCours)) {
-            nbRedacteursEnAttente ++;
+        //s'il y a des lecteurs dans la ressource alors on attend
+        //sur une deuxième file dediée aux rédacteurs
+        if (nbLecteurs > 0) {
             wait(attenteRedaction);
-            nbRedacteursEnAttente --;
         }
+
+        //le rédacteur est dans la ressource
         redactionEnCours = true;
 
         monitorOut();
@@ -141,10 +144,14 @@ public:
     void unlockWriting() {
 
         monitorIn();
+
+        //le rédacteur quitte la ressource
         redactionEnCours = false;
-        signal(attenteLecture);
+
+        //on donne le tour au prochain thread dans le fifo
         libre = true;
         signal(fifo);
+
         monitorOut();
     }
 

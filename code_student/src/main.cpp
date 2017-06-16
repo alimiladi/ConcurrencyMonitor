@@ -75,10 +75,9 @@ int main(int argc, char *argv[])
 
     //création de la ressource partagée avec Hoare
     //ReaderWriterPrioWriter_Hoare *resource = new ReaderWriterPrioWriter_Hoare();
-    //trop de files d'attente:
-    ReaderWriterPrioEgal_Hoare *resource = new ReaderWriterPrioEgal_Hoare();
+    //ReaderWriterPrioEgal_Hoare *resource = new ReaderWriterPrioEgal_Hoare();
     //fonctionne pas
-    //ReaderWriterPrioReading_Hoare *resource = new ReaderWriterPrioReading_Hoare();
+    ReaderWriterPrioReading_Hoare *resource = new ReaderWriterPrioReading_Hoare();
 
 
 
