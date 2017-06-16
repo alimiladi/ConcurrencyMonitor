@@ -1,3 +1,14 @@
+/** @file waitinglogger.h
+ *  @brief enregistre l'état d'une ressource et de ses files
+ *
+ *  @author Ali Miladi, Quentin Zeller, Julien Brêchet et Adrien Marco
+ *  @date 15.06.2017
+ *  @bug No known bug
+ *
+ * Nous avons ici deux classe, une représentant un logger de manière générale
+ * et une autre plus adaptée au contexte des logs pour un cas de lecteurs/rédacteurs
+ */
+
 
 #ifndef WAITINGLOGGER_H
 #define WAITINGLOGGER_H
