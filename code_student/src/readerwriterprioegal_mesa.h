@@ -13,7 +13,7 @@ protected:
     OWaitCondition attenteEcriture;
     int nbAttenteEcriture;
     int nbLecture;
-    int nbEcriture;
+    bool ecriture;
     QString name;
 
     OWaitCondition fifo;
@@ -33,7 +33,7 @@ public:
         nbAttenteLecture(0),
         nbAttenteEcriture(0),
         nbLecture(0),
-        nbEcriture(0),
+        ecriture(false),
         name("Reader-Writer-PrioEgal_Mesa"),
         libre(true),
         nbAttenteFifo(0)
@@ -46,24 +46,13 @@ public:
 
     void lockReading() {
         mutex.lock();
-
-        if(!libre || nbAttenteFifo){
-            nbAttenteFifo++;
+        if(ecriture){
             fifo.wait(&mutex);
-            nbAttenteFifo--;
         }
-        libre = false;
+        if(ecriture){
+            attenteLecture.wait()
+        }
 
-        if (nbEcriture > 0) {
-            nbAttenteLecture ++;
-            attenteLecture.wait(&mutex);
-        }
-        else{
-            nbLecture ++;
-
-        }
-        libre = true;
-        fifo.wakeOne();
         mutex.unlock();
     }
 
@@ -72,8 +61,6 @@ public:
         nbLecture --;
         if (nbLecture == 0) {
             attenteEcriture.wakeOne();
-            //nbAttenteEcriture--;
-            //nbEcriture++;
         }
         mutex.unlock();
     }
@@ -81,19 +68,17 @@ public:
     void lockWriting() {
         mutex.lock();
 
-        if(!libre || nbAttenteFifo){
-            nbAttenteFifo++;
+        while(!libre){
             fifo.wait(&mutex);
-            nbAttenteFifo--;
         }
         libre = false;
 
-        if (nbLecture > 0 || nbEcriture > 0) {
+        if (nbLecture > 0 || ecriture) {
             nbAttenteEcriture ++;
             attenteEcriture.wait(&mutex);
         }
         nbAttenteEcriture--;
-        nbEcriture++;
+        ecriture = true;
 
         libre = true;
         fifo.wakeOne();
@@ -104,8 +89,8 @@ public:
 
     void unlockWriting() {
         mutex.lock();
-        nbEcriture --;
-        if (nbEcriture == 0) {
+        ecriture = false
+        if () {
             attenteLecture.wakeAll();
             nbLecture = nbAttenteLecture;
             nbAttenteLecture = 0;

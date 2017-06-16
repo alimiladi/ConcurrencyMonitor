@@ -45,7 +45,7 @@ int main(int argc, char *argv[])
     //création de la ressource partagée avec Mesa
     //ReaderWriterPrioWriter_Mesa *resource = new ReaderWriterPrioWriter_Mesa();
     //fonctionne pas:
-    //ReaderWriterPrioEgal_Mesa *resource = new ReaderWriterPrioEgal_Mesa();
+    ReaderWriterPrioEgal_Mesa *resource = new ReaderWriterPrioEgal_Mesa();
     //ReaderWriterPrioReaders_Mesa *resource = new ReaderWriterPrioReaders_Mesa();
     //ReaderWriterPrioReading_Mesa *resource = new ReaderWriterPrioReading_Mesa();
 
