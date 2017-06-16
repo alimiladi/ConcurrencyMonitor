@@ -1,3 +1,24 @@
+/** @file readerwriterpriowriter_mesa.h
+ *  @brief ressource accessible avec moniteur de mesa
+ *
+ *  @author Yann Thoma : modifié par Ali Miladi, Quentin Zeller,
+ *  Julien Brêchet et Adrien Marco
+ *  @date 15.06.2017
+ *  @bug No known bug
+ *
+ * Cette classe représente une ressource que des lecteurs et rédateurs
+ * vondront accéder. Pour y accéder ou en sortir, les threads devront
+ * appeler une des méthodes ci-dessous.
+ * La ressource hérite pour cela d'une ressource abstraite.
+ * Le but ici est de gérer une prorité pour les rédacteurs.
+ * Cette classe est reprise du professeur. Pour cela nous n'ajouterons pas plus
+ * de commentaires ou modifications si ce n'est le passage de QWaitCondition à
+ * OWaitCondition et QMutex à OMutex, permettant ainsi la journalisation de logs
+ * sur les différentes files.
+ * Nous avons, par conséquent, aussi du nommer ces différentes files
+ * ainsi que cette ressource.
+ */
+
 #ifndef READERWRITERPRIOWRITER_MESA_H
 #define READERWRITERPRIOWRITER_MESA_H
 

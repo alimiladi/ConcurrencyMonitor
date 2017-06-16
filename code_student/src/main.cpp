@@ -90,7 +90,6 @@ int main(int argc, char *argv[])
     int compteurRedacteurId = 0;
     while (continuing) {
 
-       std::cout << "\n#######################################################################" << std::endl;
        std::cout.flush();
        saisie = std::cin.get();
 

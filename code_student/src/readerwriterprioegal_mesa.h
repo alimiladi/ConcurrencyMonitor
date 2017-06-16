@@ -1,3 +1,21 @@
+/** @file readerwriterprioegal_mesa.h
+ *  @brief ressource accessible avec moniteur de mesa
+ *
+ *  @author Ali Miladi, Quentin Zeller, Julien Brêchet et Adrien Marco
+ *  @date 15.06.2017
+ *  @bug No known bug
+ *
+ * Cette classe représente une ressource que des lecteurs et rédacteurs
+ * vondront accéder. Pour y accéder ou en sortir, les threads devront
+ * appeler une des méthodes ci-dessous.
+ * La ressource hérite pour cela d'une ressource abstraite
+ * Le but ici est de gérer une prorité égale entre les lecteurs et
+ * rédacteurs.
+ * Nous avons remplacé les QWaitCondition par des OWaitCondition et
+ * pareil pour QMutex. Ainsi nous garantissons un service de logs
+ * sur la ressource et ses différentes files d'attente.
+ */
+
 #ifndef READERWRITERPRIOEGAL_MESA_H
 #define READERWRITERPRIOEGAL_MESA_H
 
@@ -7,6 +25,7 @@
 class ReaderWriterPrioEgal_Mesa : public AbstractReaderWriter{
 
 protected:
+
     OMutex mutex;
     OWaitCondition attenteLecture;
     int nbAttenteLecture;
@@ -15,7 +34,6 @@ protected:
     int nbLecture;
     bool ecriture;
     QString name;
-
     OWaitCondition fifo;
     int libre;
     int nbAttenteFifo;
@@ -24,11 +42,19 @@ protected:
 
 public:
 
+    /**
+     * @brief getName
+     * @return le nom de la ressource
+     */
     QString getName(){
         return name;
     }
 
 
+    /**
+     * @brief ReaderWriterPrioEgal_Mesa
+     * constructeur de la ressource
+     */
     ReaderWriterPrioEgal_Mesa() :
         nbAttenteLecture(0),
         nbAttenteEcriture(0),
@@ -44,6 +70,11 @@ public:
         fifo.setName("fifo");
     }
 
+
+    /**
+     * @brief lockReading
+     * accès à la ressource en lecture
+     */
     void lockReading() {
         mutex.lock();
 
@@ -62,6 +93,11 @@ public:
         mutex.unlock();
     }
 
+
+    /**
+     * @brief unlockReading
+     * sortie de la ressource en lecture
+     */
     void unlockReading() {
         mutex.lock();
         nbLecture --;
@@ -71,6 +107,10 @@ public:
         mutex.unlock();
     }
 
+    /**
+     * @brief lockWriting
+     * accès à la ressource en écriture
+     */
     void lockWriting() {
         mutex.lock();
 
@@ -89,6 +129,11 @@ public:
 
     }
 
+
+    /**
+     * @brief unlockWriting
+     * sortie de la ressource en écriture
+     */
     void unlockWriting() {
         mutex.lock();
         ecriture = false;

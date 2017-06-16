@@ -1,3 +1,24 @@
+/** @file readerwriterpriowriter_hoare.h
+ *  @brief ressource accessible avec moniteur de hoare
+ *
+ *  @author Yann Thoma : modifié par Ali Miladi, Quentin Zeller,
+ *  Julien Brêchet et Adrien Marco
+ *  @date 15.06.2017
+ *  @bug No known bug
+ *
+ * Cette classe représente une ressource que des lecteurs et rédateurs
+ * vondront accéder. Pour y accéder ou en sortir, les threads devront
+ * appeler une des méthodes ci-dessous.
+ * La ressource hérite pour cela d'une ressource abstraite et du moniteur
+ * de hoare fournissant un service de logs.
+ * Le but ici est de gérer une prorité pour les rédacteurs.
+ * Cette classe est reprise du professeur. Pour cela nous n'ajouterons pas plus
+ * de commentaires ou modifications si ce n'est le passage de HoareMoniteur à
+ * OHoareMoniteur, permettant ainsi la journalisation de logs sur les différentes files.
+ * Nous avons, par conséquent, aussi du nommer ces différentes files
+ * ainsi que cette ressource.
+ */
+
 #ifndef READERWRITERPRIOWRITER_HOARE_H
 #define READERWRITERPRIOWRITER_HOARE_H
 #include "abstractreaderwriter.h"
