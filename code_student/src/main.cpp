@@ -56,11 +56,6 @@ int main(int argc, char *argv[])
     SynchroController* synchroController = SynchroController::getInstance();
 
 
-    //on récupère le waitinglogger
-    WaitingLogger* waitingLogger = WaitingLogger::getInstance();
-
-
-
     //création de la ressource partagée avec sémaphores
     //ReaderWriterEqual_Sem *resource = new ReaderWriterEqual_Sem();
     //ReaderWriterPrioReaders_Sem *resource = new ReaderWriterPrioReaders_Sem();
