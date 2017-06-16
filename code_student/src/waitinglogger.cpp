@@ -3,26 +3,6 @@
 #include <QThread>
 #include "reader_writer_thread.h"
 
-void WaitingLogger::printLogs(){
-   /* unsigned int id = ((ReaderWriterThread*)ReaderWriterThread::currentThread())->getId();
-    QString name = ((ReaderWriterThread*)ReaderWriterThread::currentThread())->objectName();
-    std::cout << "\n*******************logs de " << qPrintable(name) << "****************\n";
-    std::cout << qPrintable(*(this->logs->at(id)));
-    std::cout << "***************************************************\n" << std::endl;
-    //on efface les logs pour le thread courant
-    logs->at(id)->clear();
-    */
-
-}
-
-
-void WaitingLogger::setSizeLogs(unsigned int nbThreads){
-
-    /*for(int i = 0; i < nbThreads; i++){
-        logs->append(new QString(""));
-    }
-    */
-}
 
 
 WaitingLogger::WaitingLogger() : queues(), mutex(QMutex::NonRecursive)
@@ -125,7 +105,6 @@ void ReadWriteLogger::updateView()
     unsigned int id = ((ReaderWriterThread*)ReaderWriterThread::currentThread())->getId();
     QString name = ((ReaderWriterThread*)ReaderWriterThread::currentThread())->objectName();
 
-    //logs.append("------------------------------------------------------\n");
     for(int i = 0; i< queues.size(); i ++){
         logs.append(queues.at(i)->getName()).append(" <- ");
         for(int j =0 ; j< queues.at(i)->getThreadNames().size() ; j ++){
@@ -143,8 +122,6 @@ void ReadWriteLogger::updateView()
             logs.append(", ");
         }
     }
-    //logs.append("\n------------------------------------------------------\n");
-
 
 
     std::cout << "\n*******************logs de " << qPrintable(name) << "****************\n";
