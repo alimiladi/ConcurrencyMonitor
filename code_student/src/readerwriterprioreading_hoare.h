@@ -21,13 +21,15 @@ class ReaderWriterPrioReading_Hoare : public OHoareMonitor, public AbstractReade
 {
 protected:
 
-    Condition attenteRedaction;
+    //un seul lecteur pourra attendre sur cette file avec les autres
+    //rédacteurs, c'est la file principale.
+    Condition fifo;
+    //les autres lecteurs doivent attendre sur cette file
     Condition attenteLecture;
 
-    bool libre;
     int nbLecteurs;
-    bool redactionEnCours;
-    int nbRedacteursEnAttente;
+    bool lecteurDansFifo;
+    bool redacteur;
 
     QString name;
 
@@ -47,12 +49,11 @@ public:
      */
     ReaderWriterPrioReading_Hoare() :
         nbLecteurs(0),
-        redactionEnCours(false),
-        nbRedacteursEnAttente(0),
-        libre(true),
+        lecteurDansFifo(false),
+        redacteur(false),
         name("ReaderWriterPrioReading_Hoare"){
         attenteLecture.setName("attenteLecture");
-        attenteRedaction.setName("attenteRedaction");
+        fifo.setName("fifo");
     }
 
     /**
@@ -61,6 +62,24 @@ public:
      */
     void lockReading() {
         monitorIn();
+
+        //si déjà un lecteur attend parmis les rédacteurs alors
+        //les autres lecteurs attendront sur la file des lecteurs
+        while(lecteurDansFifo){
+            wait(attenteLecture);
+        }
+
+        //le lecteur vérifie s'il n'y a pas de rédaction en cours sinon il attend
+        //dans le fifo
+        if(redacteur){
+            lecteurDansFifo = true;
+            wait(fifo);
+            lecteurDansFifo = false;
+        }
+
+        //on donne la priorité aux autres lecteurs car il y a lecture
+        signal(attenteLecture);
+        nbLecteurs++;
 
         monitorOut();
     }
@@ -72,6 +91,17 @@ public:
     void unlockReading() {
         monitorIn();
 
+        nbLecteurs--;
+
+        //le dernier lecteur réveille un thread du fifo
+        if(nbLecteurs == 0){
+            signal(fifo);
+        }
+        //sinon on donne la priorité au lecteurs qui attendent
+        else{
+            signal(attenteLecture);
+        }
+
         monitorOut();
     }
 
@@ -82,6 +112,13 @@ public:
     void lockWriting() {
         monitorIn();
 
+        //si la ressource est occupée, on attend su le fifo
+        if(nbLecteurs > 0 || redacteur){
+            wait(fifo);
+        }
+
+        redacteur = true;
+
         monitorOut();
     }
 
@@ -91,6 +128,11 @@ public:
      */
     void unlockWriting() {
         monitorIn();
+
+        redacteur = false;
+
+        //on donne le tour au suivant dans le fifo
+        signal(fifo);
 
         monitorOut();
     }
