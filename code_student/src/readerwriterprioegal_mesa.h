@@ -80,15 +80,14 @@ public:
 
         while(!libre){
             fifo.wait(&mutex);
+
         }
         libre = false;
 
-        /*if(ecriture){
-            attenteLecture.wait(&mutex);
-        }*/
-
         nbLecture++;
 
+        libre = true;
+        fifo.wakeOne();
 
         mutex.unlock();
     }
@@ -101,9 +100,9 @@ public:
     void unlockReading() {
         mutex.lock();
         nbLecture --;
-        libre = true;
-        fifo.wakeOne();
-        //attenteLecture.wakeOne();
+        if(nbLecture == 0){
+            attenteEcriture.wakeOne();
+        }
         mutex.unlock();
     }
 
@@ -119,9 +118,9 @@ public:
         }
         libre = false;
 
-        /*if (nbLecture > 0 || ecriture) {
+        if(nbLecture > 0){
             attenteEcriture.wait(&mutex);
-        }*/
+        }
 
         ecriture = true;
 
@@ -139,7 +138,6 @@ public:
         ecriture = false;
         libre = true;
         fifo.wakeOne();
-        //attenteEcriture.wakeOne();
         mutex.unlock();
     }
 };

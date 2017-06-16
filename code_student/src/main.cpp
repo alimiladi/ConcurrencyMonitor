@@ -15,6 +15,12 @@
  * Ce programme regroupe donc différents objets tels que la ressource
  * (plusieurs types sont à disposition), le synchro contrôleur (gestion des pauses
  * et départs), le contrôleur de logs et les threads lecteurs/rédacteurs.
+ *
+ * REMARQUE IMPORTANTE: LA FILE D'ATTENTE ET SON LOG CORRESPONDANT NE SONT
+ * PAS GENERES TANT JUSQU'AU PREMIER THREAD QUI ATTENDRA DESSUS.
+ * Il est donc normal que les files ne soient pas toutes affichées dans les
+ * logs au lancement du programme. Il faut attendre que ces dernières se
+ * construisent pour pouvoir les voir.
  */
 
 #include <QApplication>
