@@ -71,7 +71,7 @@ public:
     void lockReading() {
         mutex.lock();
         //Attente sur la condition seulement si un rédacteur est déja dans la ressource
-        if (redactionEnCours) {
+        while (redactionEnCours) {
             nbLecteursEnAttente ++;
             attenteLecture.wait(&mutex);
             nbLecteursEnAttente --;

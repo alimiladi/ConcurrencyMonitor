@@ -5,10 +5,9 @@
 
 
 
-WaitingLogger::WaitingLogger() : queues(), mutex(QMutex::NonRecursive)
-{
-
-}
+WaitingLogger::WaitingLogger() :
+    queues(),
+    mutex(QMutex::NonRecursive) {}
 
 WaitingLogger *WaitingLogger::getInstance()
 {
@@ -18,11 +17,15 @@ WaitingLogger *WaitingLogger::getInstance()
 
 WaitingQueue *WaitingLogger::contains(const QString &objectName)
 {
+    //Itération sur toutes les queues d'attente
     foreach (WaitingQueue* waitingQueue, queues) {
+        //Si celle-ci existe
         if (waitingQueue->getName() == objectName) {
+            //Nous la rnvoyons simplement
             return waitingQueue;
         }
     }
+    //Sinon un pointeur nul
     return nullptr;
 }
 
@@ -31,25 +34,34 @@ QList<WaitingQueue *> WaitingLogger::getQueues() const
     return queues;
 }
 
-void WaitingLogger::updateView()
-{
+void WaitingLogger::updateView() {}
 
-}
 
 void WaitingLogger::addWaiting(const QString &objectName)
 {
     mutex.lock();
+    //Récupération directe du nom du thread à partir du nom de l'objet courant
     QString threadName = QThread::currentThread()->objectName();
+    //Recherche de la queue dans laquelle on est sencés rajouter
     WaitingQueue *queue = contains(objectName);
+    //Si elle existe
     if(queue != nullptr){
+        //On rajoute simplement du nomn du thread courant à la liste de threads en attente
+        // sur cet objet
         queue->addThreadName(threadName);
     }
+
+    //Si pas de queue
     else{
+        //Création d'une nouvelle au nom de l'objet de synchro passé en argument
         queue = new WaitingQueue();
         queue->setName(objectName);
+        //Rajout du nom du thread dans la nouvelle liste
         queue->addThreadName(threadName);
         queues.append(queue);
     }
+
+    //Mise à jour de la vue
     updateView();
     mutex.unlock();
 }
@@ -57,10 +69,18 @@ void WaitingLogger::addWaiting(const QString &objectName)
 void WaitingLogger::removeWaiting(const QString &objectName)
 {
     mutex.lock();
+    //Récupération directe du nom du thread à partir du nom de l'objet courant
     QString threadName = QThread::currentThread()->objectName();
+
+    //Recherche de la queue dans laquelle on est sencés rajouter
     WaitingQueue *queue = contains(objectName);
+
+    //Si elle existe
     if(queue != nullptr){
+        //On efface le nom du thread de la liste d'attente sinon on ne fait rien
         queue->removeThreadName(threadName);
+
+        //Mise à jour de la vue
         updateView();
     }
     mutex.unlock();
@@ -71,20 +91,23 @@ QStringList ReadWriteLogger::getResourceAccesses() const
     return resourceAccesses;
 }
 
-ReadWriteLogger::ReadWriteLogger()
-{
-
-}
+ReadWriteLogger::ReadWriteLogger() {}
 
 void ReadWriteLogger::addResourceAccess()
 {
     mutex.lock();
+    //Récupération directe du nom du thread à partir du nom de l'objet courant
     QString threadName = QThread::currentThread()->objectName();
+
+    //Rajout du nom du thread dans la queue d'accès à la ressource
     resourceAccesses.append(threadName);
-    //on enlève le thread de toutes les listes d'attente car il est dans la ressource
+
+    //On enlève le thread de toutes les listes d'attente car il est dans la ressource
     foreach (WaitingQueue *queue, queues) {
         queue->removeThreadName(threadName);
     }
+
+    //Mise à jour de la vue
     updateView();
     mutex.unlock();
 }
@@ -92,8 +115,13 @@ void ReadWriteLogger::addResourceAccess()
 void ReadWriteLogger::removeResourceAccess()
 {
     mutex.lock();
+    //Récupération directe du nom du thread à partir du nom de l'objet courant
     QString threadName = QThread::currentThread()->objectName();
+
+    //On efface de la liste le nom du thread
     resourceAccesses.removeOne(threadName);
+
+    //Mise à jour de la vue
     updateView();
     mutex.unlock();
 }
@@ -101,8 +129,7 @@ void ReadWriteLogger::removeResourceAccess()
 
 void ReadWriteLogger::updateView()
 {
-
-    unsigned int id = ((ReaderWriterThread*)ReaderWriterThread::currentThread())->getId();
+    //Récupération du nom du thead courant à partir de l'objet currentThread
     QString name = ((ReaderWriterThread*)ReaderWriterThread::currentThread())->objectName();
 
     for(int i = 0; i< queues.size(); i ++){
@@ -123,6 +150,7 @@ void ReadWriteLogger::updateView()
         }
     }
 
+    //Affichage
 
     std::cout << "\n*******************logs de " << qPrintable(name) << "****************\n";
     std::cout << qPrintable(logs);
@@ -133,28 +161,40 @@ void ReadWriteLogger::updateView()
 }
 
 
-ReadWriteLogger *ReadWriteLogger::getInstance(){
+ReadWriteLogger *ReadWriteLogger::getInstance()
+{
+    //Utilitaire qui renvoie un logger casté en ReadWriteLogger
     return (ReadWriteLogger*)WaitingLogger::getInstance();
 }
-QString WaitingQueue::getName(){
+
+
+QString WaitingQueue::getName()
+{
     return name;
 }
 
-QStringList WaitingQueue::getThreadNames(){
+
+
+QStringList WaitingQueue::getThreadNames()
+{
     return threadNames;
 }
 
-void WaitingQueue::setName(const QString &name){
+void WaitingQueue::setName(const QString &name)
+{
     this->name = name;
 }
 
-void WaitingQueue::addThreadName(const QString &threadName){
+void WaitingQueue::addThreadName(const QString &threadName)
+{
+    //Rajout du nom du thread dans la liste inuquement si inexistant dans celleéci
     if(!threadNames.contains(threadName)){
         threadNames.append(threadName);
     }
 }
 
-void WaitingQueue::removeThreadName(const QString &threadName){
+void WaitingQueue::removeThreadName(const QString &threadName)
+{
     threadNames.removeOne(threadName);
 }
 

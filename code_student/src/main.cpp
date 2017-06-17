@@ -45,6 +45,7 @@
 #include "readerwriterpriowriter_hoare.h"
 #include "readerwriterprioegal_hoare.h"
 #include "readerwriterprioreading_hoare.h"
+#include "readerwriterprioreaders_hoare.h"
 
 #define NB_THREADS_READER 3
 #define NB_THREADS_WRITER 3
@@ -65,14 +66,14 @@ int main(int argc, char *argv[])
     //création de la ressource partagée avec Mesa
     //ReaderWriterPrioWriter_Mesa *resource = new ReaderWriterPrioWriter_Mesa();
     //ReaderWriterPrioEgal_Mesa *resource = new ReaderWriterPrioEgal_Mesa();
-    //ReaderWriterPrioReaders_Mesa *resource = new ReaderWriterPrioReaders_Mesa();
+    ReaderWriterPrioReaders_Mesa *resource = new ReaderWriterPrioReaders_Mesa();
     //ReaderWriterPrioReading_Mesa *resource = new ReaderWriterPrioReading_Mesa();
 
     //création de la ressource partagée avec Hoare
     //ReaderWriterPrioWriter_Hoare *resource = new ReaderWriterPrioWriter_Hoare();
     //ReaderWriterPrioEgal_Hoare *resource = new ReaderWriterPrioEgal_Hoare();
-    //fonctionne pas
-    ReaderWriterPrioReading_Hoare *resource = new ReaderWriterPrioReading_Hoare();
+    //ReaderWriterPrioReading_Hoare *resource = new ReaderWriterPrioReading_Hoare();
+    //ReaderWriterPrioReaders_Hoare *resource = new ReaderWriterPrioReaders_Hoare();
 
 
 

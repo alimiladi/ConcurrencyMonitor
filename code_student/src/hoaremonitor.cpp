@@ -1,8 +1,21 @@
+/** @file hoarmonitor.cpp
+ *  @brief hoare moniteur
+ *
+ * Cette classe a été reprise du cours de PCO.
+ * Elle représente un moniteur de Hoare.
+ * Rien n'a été modifié dans cette classe.
+ */
+
 #include "hoaremonitor.h"
 
-HoareMonitor::Condition::Condition() : waitingSem(0), nbWaiting(0) {}
+HoareMonitor::Condition::Condition() :
+    waitingSem(0),
+    nbWaiting(0) {}
 
-HoareMonitor::HoareMonitor() : monitorMutex(1), monitorSignale(0), monitorNbSignale(0) {}
+HoareMonitor::HoareMonitor() :
+    monitorMutex(1),
+    monitorSignale(0),
+    monitorNbSignale(0) {}
 
 void HoareMonitor::monitorIn() {
     monitorMutex.acquire();

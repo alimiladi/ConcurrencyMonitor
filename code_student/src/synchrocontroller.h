@@ -22,6 +22,7 @@
 #include <QMutex>
 #include <QVector>
 
+
 /**
  * @brief The SynchroController class
  * est un singleton
@@ -37,6 +38,9 @@ private:
 
     //file d'attente pour les threads
     QSemaphore *threadWaiting;
+
+
+
 
     /**
      * @brief SynchroController
